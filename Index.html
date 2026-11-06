@@ -1,0 +1,1360 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Dia Mundial da Qualidade</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600;700;800;900&display=swap"
+    />
+
+    <!-- ÍCONES: tamanho e traço (fica aqui para não depender do style.css) -->
+    <style>
+      svg.ic {
+        display: inline-block;
+        width: 1em !important;
+        height: 1em !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        flex: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vertical-align: -0.15em;
+        overflow: visible;
+      }
+      svg.ic.fill {
+        fill: currentColor;
+        stroke: none;
+      }
+
+      /* botões: ícone um pouco maior que a letra */
+      .g-btn svg.ic,
+      .end-btn svg.ic {
+        width: 1.1em !important;
+        height: 1.1em !important;
+        margin: 0 0.15em;
+      }
+
+      /* carinhas grandes: acompanham o tamanho da fonte do bloco */
+      .final-face {
+        color: #2dd4bf;
+      }
+      .final-face svg.ic {
+        stroke-width: 1.6;
+      }
+      .consumer .face svg.ic {
+        width: 1em !important;
+        height: 1em !important;
+      }
+      .consumer.sad .face {
+        color: #ff6b6b;
+      }
+      .consumer.happy .face {
+        color: #22c55e;
+      }
+
+      .toast svg.ic {
+        width: 1.1em !important;
+        height: 1.1em !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ================= SPRITE DE ÍCONES ================= -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-arrow-right" viewBox="0 0 24 24">
+        <path d="M5 12h14" />
+        <path d="m12 5 7 7-7 7" />
+      </symbol>
+      <symbol id="i-arrow-left" viewBox="0 0 24 24">
+        <path d="m12 19-7-7 7-7" />
+        <path d="M19 12H5" />
+      </symbol>
+      <symbol id="i-rotate" viewBox="0 0 24 24">
+        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+        <path d="M21 3v5h-5" />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="M20 6 9 17l-5-5" />
+      </symbol>
+      <symbol id="i-smile" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+        <line x1="9" x2="9.01" y1="9" y2="9" />
+        <line x1="15" x2="15.01" y1="9" y2="9" />
+      </symbol>
+      <symbol id="i-frown" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M16 16s-1.5-2-4-2-4 2-4 2" />
+        <line x1="9" x2="9.01" y1="9" y2="9" />
+        <line x1="15" x2="15.01" y1="9" y2="9" />
+      </symbol>
+      <symbol id="i-meh" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="8" x2="16" y1="15" y2="15" />
+        <line x1="9" x2="9.01" y1="9" y2="9" />
+        <line x1="15" x2="15.01" y1="9" y2="9" />
+      </symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24">
+        <path
+          d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+        />
+      </symbol>
+    </svg>
+
+    <!-- função auxiliar: ic("nome") devolve o HTML do ícone (já com tamanho) -->
+    <script>
+      window.ic = (name, cls = "") =>
+        `<svg class="ic ${cls}" width="1em" height="1em" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
+    </script>
+
+    <!-- ================= TELA 1: CAPA (ORIGINAL, SEM ALTERAÇÕES) ================= -->
+    <div id="screen-intro" class="screen">
+      <div class="logo">L’ORÉAL<small>OPERATIONS</small></div>
+      <div class="kv">
+        <div class="kv-art">
+          <div class="kv-stage">
+            <div class="kv-floor"></div>
+            <div class="kv-crop">
+              <img
+                id="kv"
+                src="IMG/CAPA.png"
+                alt="L'Oréal Quality Day 2026 - Experience Trust In The Making"
+              />
+            </div>
+            <div class="kv-floor kv-floor-fix"></div>
+          </div>
+        </div>
+
+        <div class="kv-text">
+          <p class="qd">QUALITY DAY<br />2026</p>
+          <h1>
+            <span class="b">Experience<br />Trust</span
+            ><span class="l"><span class="in">In</span> the making</span>
+          </h1>
+          <p class="pt">
+            <b>A qualidade começa com cada um de nós!</b> Descubra os cuidados
+            de BPF em cada etapa e monte o caminho para um produto conforme e um
+            consumidor satisfeito.
+          </p>
+          <button id="start-btn" class="kv-btn">
+            Começar <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TELA 2: JOGO ================= -->
+    <div id="screen-game" class="screen hidden-screen">
+      <header class="g-head">
+        <div class="g-title">
+          <p class="g-kicker">
+            QUALITY DAY 2026
+            <span class="g-phase" id="phase-badge">FASE 1 DE 2</span>
+          </p>
+          <h2><b>Monte a cadeia</b> <span>da qualidade</span></h2>
+          <p class="g-hint" id="phase-hint"></p>
+        </div>
+        <div class="g-right">
+          <div class="score">
+            <span><b id="score-ok">0</b>/14 conformes</span>
+            <span class="sep">·</span>
+            <span class="nc"><b id="score-nc">0</b> NC</span>
+          </div>
+          <button id="reset-btn" class="g-btn">
+            <svg class="ic" width="1em" height="1em" aria-hidden="true">
+              <use href="#i-rotate"></use>
+            </svg>
+            Reiniciar
+          </button>
+          <button class="g-btn g-btn-dark js-end">
+            Confirmar presença
+            <svg class="ic" width="1em" height="1em" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <section id="cards-grid" class="g-cards"></section>
+      <section id="chain-slots" class="g-chain"></section>
+
+      <div id="toast" class="toast"></div>
+
+      <!-- fim da fase 1 -->
+      <div id="phase-end" class="final">
+        <div class="final-face">
+          <svg class="ic" width="1em" height="1em" aria-hidden="true">
+            <use href="#i-smile"></use>
+          </svg>
+        </div>
+        <h3>Fase 1 concluída!</h3>
+        <p id="phase-end-text"></p>
+        <div class="final-btns">
+          <button class="g-btn g-btn-dark" id="next-phase-btn">
+            Ir para a Fase 2
+            <svg class="ic" width="1em" height="1em" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- fim do jogo -->
+      <div id="final" class="final">
+        <div class="final-face">
+          <svg class="ic fill" width="1em" height="1em" aria-hidden="true">
+            <use href="#i-heart"></use>
+          </svg>
+        </div>
+        <h3>Cada cuidado faz a diferença!</h3>
+        <p>
+          Todas as áreas contribuíram para um produto feito com qualidade,
+          respeito às BPF e atenção ao consumidor.
+        </p>
+        <div class="final-btns">
+          <button class="g-btn g-btn-dark js-end">
+            Confirmar presença
+            <svg class="ic" width="1em" height="1em" aria-hidden="true">
+              <use href="#i-arrow-right"></use>
+            </svg>
+          </button>
+          <button class="g-btn" id="again-btn">
+            <svg class="ic" width="1em" height="1em" aria-hidden="true">
+              <use href="#i-rotate"></use>
+            </svg>
+            Jogar novamente
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= TELA 3: RESPOSTAS ================= -->
+    <div id="screen-end" class="screen hidden-screen" style="display: none">
+      <div id="wrap" class="cover-wrap wide">
+        <svg
+          id="chain"
+          viewBox="0 0 1600 900"
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="true"
+        >
+          <defs>
+            <marker
+              id="arW"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              orient="auto-start-reverse"
+            >
+              <path d="M0,1 L9,5 L0,9z" fill="#cbd5e1" />
+            </marker>
+            <marker
+              id="arR"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M0,1 L9,5 L0,9z" fill="#ff4d4d" />
+            </marker>
+            <linearGradient id="tileG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7aa7ff" stop-opacity=".22" />
+              <stop offset="1" stop-color="#a78bfa" stop-opacity=".06" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <div class="qr-card">
+          <div class="qr-box" id="qr">
+            <img src="IMG/QRCode.png" alt="QR Code da presença" />
+          </div>
+          <div class="qr-info">
+            <p class="qr-t">Confirme sua presença !</p>
+            <p class="qr-s">Aponte a câmera do celular para o QR Code</p>
+          </div>
+        </div>
+      </div>
+      <button
+        id="back-btn"
+        class="end-btn back-btn"
+        aria-label="Voltar ao início"
+      >
+        <svg class="ic" width="1em" height="1em" aria-hidden="true">
+          <use href="#i-arrow-left"></use>
+        </svg>
+        Início
+      </button>
+    </div>
+    <!-- ============ CADEIA (tela de respostas, em português) ============ -->
+    <script>
+      (() => {
+        const wrap = document.getElementById("wrap");
+        const NS = "http://www.w3.org/2000/svg",
+          svg = document.getElementById("chain");
+        const E = (t, a = {}, p = svg) => {
+          const e = document.createElementNS(NS, t);
+          for (const k in a) e.setAttribute(k, a[k]);
+          p.appendChild(e);
+          return e;
+        };
+        const sh = (h, f) => {
+          const n = parseInt(h.slice(1), 16);
+          return `rgb(${[n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.max(0, Math.min(255, Math.round(v * f))))})`;
+        };
+
+        /* marcador de seta verde-água (ramo do Laboratório) */
+        const defs = svg.querySelector("defs") || E("defs");
+        if (!svg.querySelector("#arT")) {
+          const mk = E(
+            "marker",
+            {
+              id: "arT",
+              markerWidth: 10,
+              markerHeight: 10,
+              refX: 9,
+              refY: 5,
+              orient: "auto",
+              markerUnits: "userSpaceOnUse",
+            },
+            defs,
+          );
+          E("path", { d: "M0,0 L10,5 L0,10 z", fill: "#2dd4bf" }, mk);
+        }
+
+        const U = 25,
+          V = 12.5,
+          Z = 25,
+          ST = "rgba(255,255,255,.2)";
+        function ctx(g, cx, cy) {
+          const P = (x, y, z = 0) => [
+            cx + (x - y) * U,
+            cy + (x + y) * V - z * Z,
+          ];
+          const S = (...a) => a.map((p) => p.join(",")).join(" ");
+          const poly = (pts, fill, op = 1) =>
+            E(
+              "polygon",
+              {
+                points: S(...pts),
+                fill,
+                "fill-opacity": op,
+                stroke: ST,
+                "stroke-width": 0.8,
+              },
+              g,
+            );
+          const box = (x, y, w, d, h, c, z = 0, op = 1) => {
+            poly(
+              [
+                P(x + w, y, z),
+                P(x + w, y + d, z),
+                P(x + w, y + d, z + h),
+                P(x + w, y, z + h),
+              ],
+              sh(c, 0.6),
+              op,
+            );
+            poly(
+              [
+                P(x, y + d, z),
+                P(x + w, y + d, z),
+                P(x + w, y + d, z + h),
+                P(x, y + d, z + h),
+              ],
+              sh(c, 0.85),
+              op,
+            );
+            poly(
+              [
+                P(x, y, z + h),
+                P(x + w, y, z + h),
+                P(x + w, y + d, z + h),
+                P(x, y + d, z + h),
+              ],
+              sh(c, 1.15),
+              op,
+            );
+          };
+          const cyl = (x, y, r, h, c, z = 0) => {
+            const [sx, sy] = P(x, y, z),
+              rx = r * 35,
+              ry = r * 17.5,
+              t = sy - h * Z;
+            E(
+              "path",
+              {
+                d: `M${sx - rx},${sy}L${sx - rx},${t}A${rx},${ry} 0 0 1 ${sx + rx},${t}L${sx + rx},${sy}A${rx},${ry} 0 0 1 ${sx - rx},${sy}Z`,
+                fill: sh(c, 0.78),
+                stroke: ST,
+              },
+              g,
+            );
+            E(
+              "ellipse",
+              { cx: sx, cy: t, rx, ry, fill: sh(c, 1.12), stroke: ST },
+              g,
+            );
+            return [sx, t];
+          };
+          const line = (a, b, s = "#94a3b8", w = 1) =>
+            E(
+              "line",
+              {
+                x1: a[0],
+                y1: a[1],
+                x2: b[0],
+                y2: b[1],
+                stroke: s,
+                "stroke-width": w,
+              },
+              g,
+            );
+          const truck = (x, y) => {
+            box(x, y, 1.8, 0.8, 0.9, "#dfe5ee");
+            box(x + 1.8, y, 0.6, 0.8, 0.65, "#2a9d8f");
+          };
+          const rack = (x, y, c) => {
+            box(x, y, 1.1, 2.8, 2, c);
+            for (let k = 1; k < 4; k++) {
+              const z = k * 0.5;
+              line(P(x + 1.1, y, z), P(x + 1.1, y + 2.8, z), "rgba(0,0,0,.4)");
+              line(P(x, y + 2.8, z), P(x + 1.1, y + 2.8, z), "rgba(0,0,0,.4)");
+            }
+          };
+          return { P, box, cyl, line, truck, rack };
+        }
+
+        /* ===== PLATAFORMAS (índice = ordem de C, P e T) =====
+           0 Recebimento · 1 Armazenagem · 2 Produção · 3 Envase
+           4 Laboratório (liberação) · 5 Terceiro · 6 Expedição */
+        const stages = [
+          // 0 Recebimento
+          (c) => {
+            c.truck(-2.8, -2.6);
+            c.truck(-2.8, -1.5);
+            c.box(0.3, 0.2, 2, 1, 0.55, "#e6eaf2");
+            c.box(0.7, 0.4, 0.7, 0.5, 0.5, "#3b82c4", 0.55);
+            c.box(-0.2, 1.8, 0.9, 0.8, 0.5, "#b88a4a");
+          },
+          // 1 Armazenagem
+          (c) => {
+            c.rack(-2.6, -2.2, "#7a5a30");
+            c.rack(-1.2, -2.2, "#9a7440");
+            c.box(-1.6, 1.3, 0.9, 0.7, 0.45, "#f5c518");
+            c.box(-0.7, 1.35, 0.12, 0.6, 1.1, "#444");
+            c.box(0.6, 0.4, 2, 2, 1.3, "#9fd0ff", 0, 0.2);
+            c.box(1, 0.9, 1, 0.8, 0.5, "#e6eaf2");
+          },
+          // 2 Produção
+          (c) => {
+            const [x, y] = c.cyl(-0.8, -0.8, 1.1, 1.7, "#e8edf5");
+            E(
+              "circle",
+              {
+                cx: x,
+                cy: y - 8,
+                r: 33,
+                fill: "#f1f5fb",
+                "fill-opacity": 0.92,
+                stroke: ST,
+              },
+              c.g,
+            );
+            c.line(c.P(0.2, 0.2, 0.6), c.P(1.7, 1.4, 0.6), "#94a3b8", 5);
+            c.cyl(1.7, 1.4, 0.5, 0.9, "#cbd5e1");
+            c.cyl(0.9, 2.1, 0.45, 0.7, "#cbd5e1");
+          },
+          // 3 Envase e embalagem
+          (c) => {
+            c.cyl(-2.2, -2.2, 0.5, 1.2, "#e8edf5");
+            c.cyl(-0.9, -2.2, 0.5, 1.2, "#e8edf5");
+            c.box(-2.6, -1.4, 4.4, 0.55, 0.45, "#64748b");
+            for (let i = 0; i < 6; i++)
+              c.cyl(-2.3 + i * 0.75, -1.15, 0.17, 0.5, "#8bd13a", 0.45);
+            c.box(1.3, -1.4, 0.55, 2.8, 0.45, "#64748b");
+            for (let i = 0; i < 5; i++)
+              c.cyl(1.55, -0.9 + i * 0.5, 0.17, 0.5, "#8bd13a", 0.45);
+            c.box(-2.6, 0.85, 4.4, 0.55, 0.45, "#64748b");
+            for (let i = 0; i < 6; i++)
+              c.cyl(-2.3 + i * 0.75, 1.12, 0.17, 0.5, "#8bd13a", 0.45);
+            ["#e53935", "#1e88e5", "#43a047", "#9ca3af"].forEach((k, i) =>
+              c.box(-2.8, 1.7 + i * 0.5, 0.4, 0.4, 0.7, k),
+            );
+          },
+          // 4 LABORATÓRIO (ênfase: borda verde-água)
+          (c) => {
+            c.box(-2, -1.8, 4, 3.6, 1.6, "#bfe6ff", 0, 0.18); // sala de vidro
+            c.box(-1.6, -1.2, 2.8, 0.7, 0.6, "#e6eaf2"); // bancada 1
+            c.cyl(-1.2, -0.85, 0.22, 0.5, "#2dd4bf", 0.6);
+            c.cyl(-0.4, -0.85, 0.22, 0.7, "#6fb7ff", 0.6);
+            c.cyl(0.4, -0.85, 0.22, 0.4, "#f5c518", 0.6);
+            c.box(-1.4, 0.4, 2.2, 0.7, 0.6, "#e6eaf2"); // bancada 2
+            c.box(0.9, 0.5, 0.5, 0.4, 0.9, "#94a3b8"); // equipamento
+            c.box(-2.8, 1.2, 0.6, 0.6, 0.5, "#2dd4bf"); // amostras
+          },
+          // 5 FÁBRICA DO TERCEIRO
+          (c) => {
+            c.box(-2.4, -1.8, 3.4, 2.6, 1.2, "#cbd5e1"); // galpão
+            c.box(-2.4, -1.8, 3.4, 0.2, 0.2, "#e5484d", 1.2); // faixa do telhado
+            c.cyl(0.6, -1.3, 0.25, 1.2, "#94a3b8", 1.2); // chaminé
+            c.truck(-2, 1.4);
+            c.cyl(1.8, -1.2, 1, 0.25, "#8794a8"); // símbolo do produto
+            c.cyl(1.8, -1.2, 0.5, 1.5, "#9bd02b", 0.25);
+            c.cyl(1.8, -1.2, 0.25, 0.35, "#6aa81a", 1.75);
+            c.cyl(1.8, -1.2, 0.28, 0.2, "#e8edf5", 2.1);
+          },
+          // 6 Expedição
+          (c) => {
+            c.truck(-2.4, -1.8);
+            c.truck(-2.4, -0.6);
+            c.box(0.5, 0.6, 2, 1, 0.55, "#e6eaf2");
+            c.box(0.9, 0.8, 0.7, 0.5, 0.5, "#b88a4a", 0.55);
+            c.truck(-1.2, 1.6);
+          },
+        ];
+
+        const arrow = (a, b, col = "W", dash = 0) =>
+          E(
+            "line",
+            {
+              x1: a[0],
+              y1: a[1],
+              x2: b[0],
+              y2: b[1],
+              stroke: col == "R" ? "#ff4d4d" : "#cbd5e1",
+              "stroke-width": col == "R" ? 3 : 1.3,
+              "stroke-dasharray": dash ? "5 5" : "none",
+              "marker-end": `url(#ar${col})`,
+              class: dash ? "flow" : "",
+            },
+            svg,
+          );
+        const arrowT = (a, b) =>
+          E(
+            "line",
+            {
+              x1: a[0],
+              y1: a[1],
+              x2: b[0],
+              y2: b[1],
+              stroke: "#2dd4bf",
+              "stroke-width": 2.5,
+              "stroke-dasharray": "6 5",
+              "marker-end": "url(#arT)",
+              class: "flow",
+            },
+            svg,
+          );
+        const dashPath = (pts, col, marker) =>
+          E(
+            "polyline",
+            {
+              points: pts,
+              fill: "none",
+              stroke: col,
+              "stroke-width": 2.5,
+              "stroke-dasharray": "8 6",
+              "marker-end": `url(#${marker})`,
+              class: "flow",
+            },
+            svg,
+          );
+        const txt = (x, y, s, fill, fs) =>
+          (E("text", { x, y, fill, "font-size": fs }, svg).textContent = s);
+        const S2 = (p) => p.map((a) => a.join(",")).join(" ");
+
+        /* QR code preso ao desenho (guarda a referência e o estilo original) */
+        const qrCard = document.querySelector(".qr-card");
+        const qrStyle = qrCard ? qrCard.getAttribute("style") : null;
+
+        /* ===== TEXTOS (título, linhas, cor do texto, cor da etiqueta) ===== */
+        const T = [
+          [
+            "Recebimento",
+            ["Recebimento MP", "Receb. AC, granel, SF, PF"],
+            "#ff7b7b",
+          ],
+          [
+            "Transferência e Armazenagem",
+            ["Transferência MP e granel", "Armazenagem"],
+            "#d58cf0",
+          ],
+          ["Produção", ["Pesagem de MP", "Fabricação do granel"], "#e07ad0"],
+          ["Envase e Embalagem", ["Envase e embalagem PF"], "#8fd6a0"],
+          [
+            "Laboratório",
+            ["Amostragem MP e AC", "Controle MP, AC e PF", "Liberação de lote"],
+            "#5eead4",
+            "#0e9f8e",
+          ],
+          ["Terceirização", ["Fábrica do terceiro"], "#6fb7ff"],
+          ["Expedição", ["Expedição PF"], "#6fb7ff"],
+        ];
+
+        const LEGENDA = [
+          "MP: matéria-prima · AC: acondicionamento",
+          "SF: semiacabado · PF: produto acabado",
+        ];
+
+        // P = [x, y, fromX, fromY, toX, toY]
+        const MODES = {
+          wide: {
+            vb: [1600, 900],
+            f: { fs: 19, tf: 14, th: 26, lh: 23, off: 50, cw: 8.6 },
+            C: [
+              [250, 200], // Recebimento
+              [540, 300], // Armazenagem
+              [830, 400], // Produção
+              [1120, 500], // Envase
+              [1120, 740], // Laboratório
+              [1440, 400], // Terceiro
+              [1440, 730], // Expedição
+            ],
+            P: [
+              [330, 22, 335, 52, 300, 160], // Recebimento
+              [610, 95, 600, 130, 585, 260], // Armazenagem
+              [870, 165, 862, 195, 850, 350], // Produção
+              [1010, 290, 1000, 318, 1100, 455], // Envase
+              [680, 655, 910, 725, 1000, 738], // Laboratório
+              [1290, 200, 1440, 262, 1440, 335], // Terceiro
+              [1440, 540, 1432, 575, 1445, 672], // Expedição
+            ],
+            // caixa do QR code no desenho: [x, y, largura, altura]
+            qr: [129, 538, 379, 307],
+            extra() {
+              // fluxo principal
+              arrow([340, 245], [450, 255], "R", 1);
+              arrow([630, 345], [740, 355], "R", 1);
+              arrow([920, 445], [1030, 455], "R", 1);
+              arrow([1120, 585], [1120, 660], "R", 1); // envase -> liberação (lab)
+              arrow([1215, 770], [1340, 742], "R", 1); // liberação -> expedição
+              // terceirização
+              arrow([1215, 470], [1340, 420], "W", 1);
+              arrow([1400, 455], [1235, 705], "W", 1);
+              // laboratório -> amostragem de entrada (contorna o QR)
+              dashPath(
+                "1000,758 1000,875 40,875 40,200 92,200",
+                "#2dd4bf",
+                "arT",
+              );
+              arrowT([1170, 690], [1170, 555]); // controle de PF
+              // produtos não conformes (segue por cima da área do QR)
+              dashPath("540,385 540,560 1010,560 1065,690", "#ff4d4d", "arR");
+              txt(555, 495, "Produtos não", "#ff7b7b", 19);
+              txt(555, 518, "conformes", "#ff7b7b", 19);
+              LEGENDA.forEach((s, k) =>
+                txt(1020, 866 + k * 22, s, "#9ca3af", 15),
+              );
+            },
+          },
+          tall: {
+            vb: [900, 1900],
+            f: { fs: 30, tf: 22, th: 38, lh: 36, off: 74, cw: 13.5 },
+            C: [
+              [230, 330], // Recebimento
+              [650, 590], // Armazenagem
+              [230, 850], // Produção
+              [650, 1110], // Envase
+              [650, 1370], // Laboratório
+              [230, 1110], // Terceiro
+              [230, 1630], // Expedição
+            ],
+            P: [
+              [330, 40, 320, 110, 260, 265],
+              [60, 470, 445, 530, 570, 560],
+              [60, 650, 200, 770, 225, 800],
+              [520, 930, 700, 1022, 665, 1050],
+              [60, 1240, 400, 1370, 495, 1375],
+              [60, 935, 280, 1022, 240, 1055],
+              [400, 1560, 398, 1590, 340, 1630],
+            ],
+            extra() {
+              arrow([320, 375], [560, 545], "R", 1);
+              arrow([560, 635], [320, 805], "R", 1);
+              arrow([320, 895], [560, 1065], "R", 1);
+              arrow([650, 1190], [650, 1290], "R", 1);
+              arrow([560, 1415], [320, 1585], "R", 1);
+              arrow([495, 1110], [385, 1110], "W", 1);
+              arrow([320, 1155], [560, 1325], "W", 1);
+              dashPath("800,1375 885,1375 885,330 390,330", "#2dd4bf", "arT");
+              arrowT([700, 1300], [700, 1162]);
+              E(
+                "line",
+                {
+                  x1: 48,
+                  y1: 560,
+                  x2: 48,
+                  y2: 1300,
+                  stroke: "#ff4d4d",
+                  "stroke-width": 3,
+                  "stroke-dasharray": "8 6",
+                  class: "flow",
+                },
+                svg,
+              );
+              E(
+                "text",
+                {
+                  x: 0,
+                  y: 0,
+                  fill: "#ff7b7b",
+                  "font-size": 28,
+                  "text-anchor": "middle",
+                  transform: "translate(40,930) rotate(-90)",
+                },
+                svg,
+              ).textContent = "Produtos não conformes";
+              LEGENDA.forEach((s, k) =>
+                txt(60, 1800 + k * 24, s, "#9ca3af", 17),
+              );
+            },
+          },
+        };
+
+        let cur = null;
+        function build(m) {
+          cur = m;
+          const M = MODES[m],
+            f = M.f;
+          svg.setAttribute("viewBox", "0 0 " + M.vb.join(" "));
+          [...svg.children].forEach((n) => {
+            if (n.tagName != "defs") n.remove();
+          });
+          wrap.className = "cover-wrap " + m;
+
+          stages.forEach((fn, i) => {
+            const [cx, cy] = M.C[i],
+              lab = i === 4,
+              g = E("g", { class: "stage", style: `--d:${0.3 + i * 0.35}s` });
+            E(
+              "polygon",
+              {
+                points: S2([
+                  [cx, cy - 75],
+                  [cx + 150, cy],
+                  [cx, cy + 75],
+                  [cx - 150, cy],
+                ]),
+                fill: "url(#tileG)",
+                stroke: lab ? "#2dd4bf" : "rgba(255,255,255,.3)",
+                "stroke-width": lab ? 2.5 : 1.2,
+              },
+              g,
+            );
+            E(
+              "polygon",
+              {
+                points: S2([
+                  [cx, cy - 62],
+                  [cx + 124, cy],
+                  [cx, cy + 62],
+                  [cx - 124, cy],
+                ]),
+                fill: "none",
+                stroke: lab ? "rgba(45,212,191,.8)" : "rgba(255,214,102,.55)",
+                "stroke-width": 1.5,
+              },
+              g,
+            );
+            const c = ctx(g, cx, cy);
+            c.g = g;
+            fn(c);
+          });
+
+          T.forEach(([tag, lines, col, tagCol], i) => {
+            const [x, y, fx, fy, tx, ty] = M.P[i],
+              g = E("g", { class: "stage", style: `--d:${0.8 + i * 0.2}s` });
+            E(
+              "rect",
+              {
+                x,
+                y,
+                width: tag.length * f.cw + 22,
+                height: f.th,
+                rx: 6,
+                fill: tagCol || "#1f6fd1",
+              },
+              g,
+            );
+            E(
+              "text",
+              {
+                x: x + 11,
+                y: y + f.th * 0.7,
+                fill: "#fff",
+                "font-size": f.tf,
+                "font-weight": 600,
+              },
+              g,
+            ).textContent = tag;
+            lines.forEach(
+              (s, k) =>
+                (E(
+                  "text",
+                  {
+                    x: x + 14,
+                    y: y + f.off + k * f.lh,
+                    fill: col,
+                    "font-size": f.fs,
+                  },
+                  g,
+                ).textContent = s),
+            );
+
+            const linha = arrow([fx, fy], [tx, ty], "W", 1);
+            linha.style.animationDelay = `${2.2 + i * 0.2}s`;
+          });
+
+          M.extra();
+
+          /* QR code: dentro do desenho (wide) ou solto na tela (tall) */
+          if (qrCard) {
+            if (M.qr) {
+              const [qx, qy, qw, qh] = M.qr;
+              const fo = E(
+                "foreignObject",
+                {
+                  x: qx,
+                  y: qy,
+                  width: qw,
+                  height: qh,
+                  style: "overflow:visible",
+                },
+                svg,
+              );
+              qrCard.setAttribute(
+                "style",
+                "position:static;inset:auto;transform:none;width:100%;height:100%;margin:0;box-sizing:border-box",
+              );
+              fo.appendChild(qrCard);
+            } else {
+              if (qrStyle === null) qrCard.removeAttribute("style");
+              else qrCard.setAttribute("style", qrStyle);
+              wrap.appendChild(qrCard);
+            }
+          }
+        }
+
+        const mode = () => (innerWidth < innerHeight ? "tall" : "wide");
+        window.__buildChain = () => {
+          cur = null;
+          build(mode());
+        };
+        addEventListener("resize", () => {
+          if (cur && mode() !== cur) build(mode());
+        });
+      })();
+    </script>
+
+    <!-- ============ JOGO + NAVEGAÇÃO ============ -->
+    <script>
+      (() => {
+        const AREAS = [
+          { id: "fluxo", name: "Fluxo", cap: 2 },
+          { id: "pesagem", name: "Pesagem", cap: 2 },
+          { id: "fabricacao", name: "Fabricação", cap: 2 },
+          { id: "envase", name: "Envase", cap: 2 },
+          { id: "cq", name: "Controle de Qualidade", cap: 2 },
+          { id: "gq", name: "Garantia da Qualidade", cap: 2 },
+          { id: "higiene", name: "Higiene", cap: 2 },
+          { id: "eng", name: "Engenharia de Processos", cap: 2 },
+        ];
+
+        /* ===== FASES: para mudar a divisão, edite só o campo "areas" ===== */
+        const PHASES = [
+          {
+            name: "Etapa produtiva",
+            hint: "Etapa produtiva: arraste cada cuidado até a etapa correta.",
+            done: "Agora vamos às áreas de qualidade e suporte, que garantem e controlam a conformidade de ponta a ponta.",
+            areas: ["fluxo", "pesagem", "fabricacao", "envase"],
+          },
+          {
+            name: "Qualidade e suporte",
+            hint: "Fase 2 · Qualidade e suporte: as áreas que garantem a conformidade.",
+            done: "",
+            areas: ["cq", "gq", "higiene", "eng"],
+          },
+        ];
+
+        const CARDS = [
+          {
+            area: "fluxo",
+            text: "Confiro a identificação, o lote, limpeza e a integridade dos pallets recebidos e expedidos, evitando que materiais incorretos ou danificados comprometam o PF que chegará ao consumidor.",
+          },
+          {
+            area: "fluxo",
+            text: "Preservo a identificação dos materiais e local de armazenamento dos produtos durante as movimentações, mantendo a rastreabilidade ao longo da cadeia produtiva.",
+          },
+          {
+            area: "pesagem",
+            text: "Antes de separar as quantidades da OF, mantenho minha área limpa e organizada, assim como verifico a limpeza dos pallets de MP antes da pesagem, evitando contaminação desde a etapa de preparo.",
+          },
+          {
+            area: "pesagem",
+            text: "Confiro a MP, o lote e a quantidade prevista e registro a pesagem conforme o procedimento, contribuindo para que o consumidor receba o produto com a composição e concentração correta.",
+          },
+          {
+            area: "fabricacao",
+            text: "Verifico as condições de limpeza da área e dos equipamentos antes de iniciar a produção do molho, prevenindo contaminações que possam comprometer a qualidade do produto.",
+          },
+          {
+            area: "fabricacao",
+            text: "Sigo a sequência e os parâmetros do MODOP e, ao detectar um desvio, comunico e sigo o procedimento previsto para evitar que o problema avance até o consumidor.",
+          },
+          {
+            area: "envase",
+            text: "Confiro a identificação do produto, do lote e dos ACs e preencho os documentos durante a operação, mantendo a rastreabilidade do que chegará ao consumidor.",
+          },
+          {
+            area: "envase",
+            text: "Mantenho a linha limpa e organizada e verifico a retirada de materiais da operação anterior, prevenindo misturas e trocas de produtos ou embalagens.",
+          },
+          {
+            area: "cq",
+            text: "Sigo os procedimentos e métodos de análise aprovados para verificar se o produto atende aos requisitos de qualidade esperados pelo consumidor.",
+          },
+          {
+            area: "cq",
+            text: "Registro os resultados das análises com fidelidade e comunico desvios conforme o procedimento, contribuindo para que produtos não conformes não cheguem ao consumidor.",
+          },
+          {
+            area: "gq",
+            text: "Atuo para que os procedimentos estejam atualizados e aprovados, orientando práticas de BPF que protegem a qualidade em toda a cadeia produtiva.",
+          },
+          {
+            area: "gq",
+            text: "Acompanho o tratamento dos desvios durante toda a vida do produto, desde a concepção até sua validade e a experiência do consumidor. Verifico também a eficácia das ações realizadas, contribuindo para evitar a reincidência de falhas.",
+          },
+          {
+            area: "higiene",
+            text: "Desenvolvemos os procedimentos de limpeza e sanitização, respeitando os produtos e o tempo de contato definido para prevenir contaminações.",
+          },
+          {
+            area: "higiene",
+            text: "Acompanho a aplicação da limpeza e da sanitização e verifico sua eficácia, garantindo que as áreas e os equipamentos estejam prontos para a produção e que o consumidor receba um produto seguro.",
+          },
+          {
+            area: "eng",
+            text: "Elaboro e atualizo o modo operatório (MODOP), detalhando a sequência e os parâmetros de fabricação para orientar uma execução padronizada, respeitar as BPF e preservar a qualidade do produto que chega ao consumidor.",
+          },
+          {
+            area: "eng",
+            text: "Analiso os parâmetros e os desvios do processo para propor melhorias, com foco em estabilidade, padronização e qualidade do produto entregue ao consumidor.",
+          },
+        ];
+
+        /* carinhas do consumidor: "icon" = nome no sprite, "fill" = ícone preenchido */
+
+        const MOODS = {
+          neutral: {
+            emoji: "🙂",
+            label: "Consumidor final",
+            cls: "",
+          },
+          sad: {
+            emoji: "😟",
+            label: "Decepcionado: reclamação",
+            cls: "sad",
+          },
+          good: {
+            emoji: "😊",
+            label: "Produto saiu conforme",
+            cls: "happy",
+          },
+          happy: {
+            emoji: "🥰",
+            label: "Consumidor satisfeito!",
+            cls: "happy",
+          },
+        };
+
+        const $ = (id) => document.getElementById(id);
+        const gridEl = $("cards-grid"),
+          chainEl = $("chain-slots"),
+          toastEl = $("toast"),
+          finalEl = $("final"),
+          phaseEndEl = $("phase-end");
+        let phase = 0,
+          okAll = 0,
+          okPhase = 0,
+          phaseTotal = 0,
+          nc = 0,
+          drag = null,
+          hoverSlot = null,
+          toastT = null,
+          moodT = null,
+          consumerEl = null;
+
+        const shuffle = (a) => {
+          for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+          }
+          return a;
+        };
+
+        /* ---------- JOGO / FASES ---------- */
+        function startGame() {
+          okAll = 0;
+          nc = 0;
+          loadPhase(0);
+        }
+
+        function loadPhase(p) {
+          phase = p;
+          okPhase = 0;
+          drag = null;
+          clearTimeout(toastT);
+          clearTimeout(moodT);
+          toastEl.classList.remove("show");
+          finalEl.classList.remove("show");
+          phaseEndEl.classList.remove("show");
+          gridEl.innerHTML = "";
+          chainEl.innerHTML = "";
+
+          const P = PHASES[p];
+          const areas = AREAS.filter((a) => P.areas.includes(a.id));
+          const cards = CARDS.filter((c) => P.areas.includes(c.area));
+          phaseTotal = cards.length;
+
+          chainEl.style.setProperty("--ns", areas.length);
+          $("phase-badge").textContent = `FASE ${p + 1} DE ${PHASES.length}`;
+          $("phase-hint").textContent = P.hint;
+
+          areas.forEach((a) => {
+            const s = document.createElement("div");
+            s.className = "slot";
+            s.dataset.area = a.id;
+            s.innerHTML = `<div class="slot-h"><span>${a.name}</span></div><div class="slot-body"></div>`;
+            const body = s.querySelector(".slot-body");
+            for (let i = 0; i < a.cap; i++) {
+              const ph = document.createElement("div");
+              ph.className = "ph";
+              body.appendChild(ph);
+            }
+            chainEl.appendChild(s);
+          });
+
+          consumerEl = document.createElement("div");
+          consumerEl.className = "consumer";
+          consumerEl.innerHTML = `<span class="face"></span><small></small>`;
+          chainEl.appendChild(consumerEl);
+
+          shuffle(cards.map((c) => ({ ...c }))).forEach((c) => {
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            const card = document.createElement("div");
+            card.className = "card";
+            card.dataset.area = c.area;
+            card.innerHTML = `
+              <div class="content">
+                <div class="back">
+                  <div class="back-content">
+                    <img src="IMG/Cartas.png" alt="" draggable="false" />
+                    <strong>Toque para virar</strong>
+                  </div>
+                </div>
+                <div class="front">
+                  <div class="img">
+                    <div class="circle"></div>
+                    <div class="circle c-right"></div>
+                    <div class="circle c-bottom"></div>
+                  </div>
+                  <div class="front-content">
+                    <small class="badge">Cuidado de BPF</small>
+                    <div class="description">
+                      <p class="txt"></p>
+                      <p class="card-footer">Arraste até a etapa correta</p>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+            card.querySelector(".txt").textContent = c.text;
+            card.addEventListener("pointerdown", onDown);
+            cell.appendChild(card);
+            gridEl.appendChild(cell);
+          });
+
+          layoutCards();
+          updateScore();
+          setMood("neutral");
+          toast(`Fase ${p + 1} · ${P.name}`, "info");
+        }
+
+        // reorganiza os cards que restam: ficam maiores a cada acerto
+        function layoutCards() {
+          const n = gridEl.querySelectorAll(".cell").length;
+          gridEl.style.setProperty("--n", Math.max(n, 1));
+          gridEl.style.setProperty(
+            "--pop",
+            n >= 7 ? 1.4 : n === 6 ? 1.3 : n === 5 ? 1.2 : n >= 3 ? 1.12 : 1.05,
+          );
+        }
+
+        function updateScore() {
+          $("score-ok").textContent = okAll;
+          $("score-nc").textContent = nc;
+        }
+
+        function setMood(k) {
+          const m = MOODS[k];
+          consumerEl.className = "consumer " + m.cls;
+          consumerEl.querySelector(".face").textContent = m.emoji;
+          consumerEl.querySelector("small").textContent = m.label;
+        }
+
+        // mensagens são fixas do código, então podem levar HTML (ícones)
+        function toast(msg, type) {
+          clearTimeout(toastT);
+          toastEl.innerHTML = msg;
+          toastEl.className = "toast show " + type;
+          toastT = setTimeout(() => toastEl.classList.remove("show"), 2600);
+        }
+
+        /* ---------- ARRASTAR ---------- */
+        const slotAt = (x, y) => {
+          for (const el of document.elementsFromPoint(x, y)) {
+            const s = el.closest && el.closest(".slot");
+            if (s) return s;
+          }
+          return null;
+        };
+
+        // destrava qualquer arrasto que ficou preso (tela touch)
+        function cancelDrag() {
+          if (!drag) return;
+          removeEventListener("pointermove", onMove);
+          removeEventListener("pointerup", onUp);
+          removeEventListener("pointercancel", onUp);
+          const { card, cell } = drag;
+          drag = null;
+          if (hoverSlot) {
+            hoverSlot.classList.remove("drag-over");
+            hoverSlot = null;
+          }
+          returnToCell(card, cell, false);
+        }
+        addEventListener("blur", cancelDrag);
+
+        function onDown(e) {
+          const card = e.currentTarget;
+          if (drag) cancelDrag();
+          if (card.dataset.lock || card.classList.contains("placed")) return;
+
+          if (!card.classList.contains("flipped")) {
+            // só uma carta aberta por vez
+            gridEl.querySelectorAll(".card.flipped").forEach((c) => {
+              if (c !== card && !c.dataset.lock) c.classList.remove("flipped");
+            });
+            card.classList.add("flipped");
+            return;
+          }
+
+          e.preventDefault();
+          const rc = card.getBoundingClientRect();
+          const cr = card.parentNode.getBoundingClientRect();
+          const w = cr.width * 1.15,
+            h = cr.height * 1.15;
+          const cx = rc.left + rc.width / 2,
+            cy = rc.top + rc.height / 2;
+          drag = { card, cell: card.parentNode, sx: e.clientX, sy: e.clientY };
+          card.style.cssText = `position:fixed;left:${cx - w / 2}px;top:${cy - h / 2}px;width:${w}px;height:${h}px;margin:0`;
+          document.body.appendChild(card);
+          requestAnimationFrame(() => card.classList.add("dragging"));
+          addEventListener("pointermove", onMove);
+          addEventListener("pointerup", onUp);
+          addEventListener("pointercancel", onUp);
+        }
+
+        function onMove(e) {
+          if (!drag) return;
+          e.preventDefault();
+          drag.card.style.transform = `translate(${e.clientX - drag.sx}px, ${e.clientY - drag.sy}px) scale(1.05)`;
+          const s = slotAt(e.clientX, e.clientY);
+          if (hoverSlot && hoverSlot !== s)
+            hoverSlot.classList.remove("drag-over");
+          if (s) s.classList.add("drag-over");
+          hoverSlot = s;
+        }
+
+        function onUp(e) {
+          if (!drag) return;
+          removeEventListener("pointermove", onMove);
+          removeEventListener("pointerup", onUp);
+          removeEventListener("pointercancel", onUp);
+          const { card, cell } = drag;
+          drag = null;
+          card.classList.remove("dragging");
+          if (hoverSlot) hoverSlot.classList.remove("drag-over");
+          hoverSlot = null;
+
+          const slot = slotAt(e.clientX, e.clientY);
+          if (!slot) return returnToCell(card, cell, false); // soltou fora
+          const free = slot.querySelector(".ph:not(.full)");
+          if (slot.dataset.area === card.dataset.area && free)
+            placeOk(card, slot, free, cell);
+          else placeWrong(card, cell, slot);
+        }
+
+        /* ---------- ACERTO: verde em volta, PF conforme ---------- */
+        function placeOk(card, slot, ph, cell) {
+          card.removeAttribute("style");
+          card.classList.add("placed", "ok-flash");
+          ph.classList.add("full");
+          ph.appendChild(card);
+          cell.remove(); // some a casa vazia...
+          layoutCards(); // ...e os cards que restam crescem
+          setTimeout(() => card.classList.remove("ok-flash"), 900);
+          okAll++;
+          okPhase++;
+          updateScore();
+          if (!slot.querySelector(".ph:not(.full)")) slot.classList.add("done");
+          toast(
+            `PF conforme ${ic("check")} Cuidado de BPF no lugar certo!`,
+            "ok",
+          );
+          if (okPhase === phaseTotal) {
+            if (phase === PHASES.length - 1) finish();
+            else phaseDone();
+          }
+        }
+
+        /* ---------- ERRO: vermelho, NC, volta virada (memória) ---------- */
+        function placeWrong(card, cell, slot) {
+          nc++;
+          updateScore();
+          card.dataset.lock = "1";
+          card.classList.add("nc");
+          slot.classList.add("shake");
+          setTimeout(() => slot.classList.remove("shake"), 600);
+          toast(
+            `Não conformidade gerada! PF NC ${ic("arrow-right")} consumidor decepcionado e reclamação.`,
+            "bad",
+          );
+          setMood("sad");
+          clearTimeout(moodT);
+          moodT = setTimeout(() => {
+            if (okPhase < phaseTotal) setMood("neutral");
+          }, 3200);
+          setTimeout(() => {
+            card.classList.remove("nc");
+            returnToCell(card, cell, true);
+          }, 1200);
+        }
+
+        function returnToCell(card, cell, flipBack) {
+          card.dataset.lock = "1";
+          const go = () => {
+            // congela na posição visual atual e desliza até a célula de origem
+            const r = card.getBoundingClientRect();
+            card.classList.remove("dragging");
+            card.style.transition = "none";
+            card.style.transform = "none";
+            card.style.left = r.left + "px";
+            card.style.top = r.top + "px";
+            card.style.width = r.width + "px";
+            card.style.height = r.height + "px";
+            void card.offsetWidth;
+            const c = cell.getBoundingClientRect();
+            card.style.transition =
+              "left .5s ease, top .5s ease, width .5s ease, height .5s ease";
+            card.style.left = c.left + "px";
+            card.style.top = c.top + "px";
+            card.style.width = c.width + "px";
+            card.style.height = c.height + "px";
+            setTimeout(() => {
+              card.removeAttribute("style");
+              delete card.dataset.lock;
+              cell.appendChild(card);
+            }, 540);
+          };
+          if (flipBack) {
+            card.classList.remove("flipped"); // volta de costas
+            setTimeout(go, 650);
+          } else go();
+        }
+
+        /* ---------- FIM DE FASE / FIM DE JOGO ---------- */
+        function phaseDone() {
+          clearTimeout(moodT);
+          setMood("good");
+          $("phase-end-text").textContent = PHASES[phase].done;
+          $("next-phase-btn").innerHTML =
+            `Ir para a Fase ${phase + 2} ${ic("arrow-right")}`;
+          phaseEndEl.querySelector(".final-face").innerHTML = ic("smile");
+          phaseEndEl.querySelector("h3").textContent =
+            `Fase ${phase + 1} concluída!`;
+          setTimeout(() => phaseEndEl.classList.add("show"), 1300);
+        }
+
+        function finish() {
+          clearTimeout(moodT);
+          setMood("happy");
+          finalEl.querySelector(".final-face").innerHTML = ic("heart", "fill");
+          setTimeout(() => finalEl.classList.add("show"), 1300);
+        }
+
+        $("next-phase-btn").addEventListener("click", () =>
+          loadPhase(phase + 1),
+        );
+
+        /* ---------- TELAS ---------- */
+        const intro = $("screen-intro"),
+          game = $("screen-game"),
+          end = $("screen-end");
+
+        $("start-btn").addEventListener("click", () => {
+          intro.classList.add("hidden-screen");
+          setTimeout(() => {
+            intro.style.display = "none";
+            game.classList.remove("hidden-screen");
+          }, 800);
+        });
+
+        document.querySelectorAll(".js-end").forEach((b) =>
+          b.addEventListener("click", () => {
+            game.classList.add("hidden-screen");
+            setTimeout(() => {
+              game.style.display = "none";
+              end.style.display = "flex";
+              requestAnimationFrame(() => {
+                end.classList.remove("hidden-screen");
+                window.__buildChain();
+              });
+            }, 800);
+          }),
+        );
+
+        $("back-btn").addEventListener("click", () => {
+          end.classList.add("hidden-screen");
+
+          setTimeout(() => {
+            end.style.display = "none";
+            intro.style.display = "flex";
+
+            requestAnimationFrame(() => {
+              intro.classList.remove("hidden-screen");
+            });
+          }, 800);
+        });
+
+        $("reset-btn").addEventListener("click", startGame);
+        $("again-btn").addEventListener("click", startGame);
+
+        startGame();
+      })();
+    </script>
+  </body>
+</html>
