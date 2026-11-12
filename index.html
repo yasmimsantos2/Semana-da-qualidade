@@ -1287,29 +1287,7 @@
         }
 
         /* ---------- FIM DE FASE / FIM DE JOGO ---------- */
-        function phaseDone() {
-          clearTimeout(moodT);
-          setMood("good");
-          $("phase-end-text").textContent = PHASES[phase].done;
-          $("next-phase-btn").innerHTML =
-            `Ir para a Fase ${phase + 2} ${ic("arrow-right")}`;
-          phaseEndEl.querySelector(".final-face").innerHTML = ic("smile");
-          phaseEndEl.querySelector("h3").textContent =
-            `Fase ${phase + 1} concluída!`;
-          setTimeout(() => phaseEndEl.classList.add("show"), 1300);
-        }
-
-        function finish() {
-          clearTimeout(moodT);
-          setMood("happy");
-          finalEl.querySelector(".final-face").innerHTML = ic("heart", "fill");
-          setTimeout(() => finalEl.classList.add("show"), 1300);
-        }
-
-        $("next-phase-btn").addEventListener("click", () =>
-          loadPhase(phase + 1),
-        );
-
+        
         /* ---------- TELAS ---------- */
         const intro = $("screen-intro"),
           game = $("screen-game"),
@@ -1317,18 +1295,23 @@
 
         $("start-btn").addEventListener("click", () => {
           intro.classList.add("hidden-screen");
+
           setTimeout(() => {
             intro.style.display = "none";
+            game.style.display = "";
             game.classList.remove("hidden-screen");
+            startGame();
           }, 800);
         });
 
         document.querySelectorAll(".js-end").forEach((b) =>
           b.addEventListener("click", () => {
             game.classList.add("hidden-screen");
+
             setTimeout(() => {
               game.style.display = "none";
               end.style.display = "flex";
+
               requestAnimationFrame(() => {
                 end.classList.remove("hidden-screen");
                 window.__buildChain();
@@ -1342,10 +1325,11 @@
 
           setTimeout(() => {
             end.style.display = "none";
-            intro.style.display = "flex";
+            game.style.display = "";
+            startGame();
 
             requestAnimationFrame(() => {
-              intro.classList.remove("hidden-screen");
+              game.classList.remove("hidden-screen");
             });
           }, 800);
         });
