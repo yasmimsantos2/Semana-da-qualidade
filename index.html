@@ -4,8 +4,12 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="manifest.json" />
     <title>Dia Mundial da Qualidade</title>
     <link rel="stylesheet" href="style.css" />
     <link
@@ -35,7 +39,6 @@
         stroke: none;
       }
 
-      /* botões: ícone um pouco maior que a letra */
       .g-btn svg.ic,
       .end-btn svg.ic {
         width: 1.1em !important;
@@ -43,7 +46,6 @@
         margin: 0 0.15em;
       }
 
-      /* carinhas grandes: acompanham o tamanho da fonte do bloco */
       .final-face {
         color: #2dd4bf;
       }
@@ -116,7 +118,7 @@
         `<svg class="ic ${cls}" width="1em" height="1em" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
     </script>
 
-    <!-- ================= TELA 1: CAPA (ORIGINAL, SEM ALTERAÇÕES) ================= -->
+    <!-- ================= TELA 1: CAPA ================= -->
     <div id="screen-intro" class="screen">
       <div class="logo">L’ORÉAL<small>OPERATIONS</small></div>
       <div class="kv">
@@ -297,6 +299,7 @@
         Início
       </button>
     </div>
+
     <!-- ============ CADEIA (tela de respostas, em português) ============ -->
     <script>
       (() => {
@@ -955,14 +958,8 @@
           },
         ];
 
-        /* carinhas do consumidor: "icon" = nome no sprite, "fill" = ícone preenchido */
-
         const MOODS = {
-          neutral: {
-            emoji: "🙂",
-            label: "Consumidor final",
-            cls: "",
-          },
+          neutral: { emoji: "🙂", label: "Consumidor final", cls: "" },
           sad: {
             emoji: "😟",
             label: "Decepcionado: reclamação",
@@ -997,6 +994,9 @@
           moodT = null,
           consumerEl = null;
 
+        const isMobile = () =>
+          matchMedia("(max-width: 700px) and (max-aspect-ratio: 1/1)").matches;
+
         const shuffle = (a) => {
           for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -1006,6 +1006,7 @@
         };
 
         /* ---------- JOGO / FASES ---------- */
+
         function startGame() {
           okAll = 0;
           nc = 0;
@@ -1163,17 +1164,44 @@
           }
 
           e.preventDefault();
+          try {
+            card.releasePointerCapture(e.pointerId); // essencial no touch
+          } catch (_) {}
+
           const rc = card.getBoundingClientRect();
-          const cr = card.parentNode.getBoundingClientRect();
-          const w = cr.width * 1.15,
+          const cell = card.parentNode;
+          const cr = cell.getBoundingClientRect();
+          let w,
+            h,
+            cx,
+            cy,
+            off = 0;
+
+          if (isMobile()) {
+            w = innerWidth * 0.4;
+            h = (w * 254) / 190;
+            off = -h * 0.5; // a carta fica acima do dedo
+            cx = e.clientX;
+            cy = e.clientY + off;
+          } else {
+            w = cr.width * 1.15;
             h = cr.height * 1.15;
-          const cx = rc.left + rc.width / 2,
+            cx = rc.left + rc.width / 2;
             cy = rc.top + rc.height / 2;
-          drag = { card, cell: card.parentNode, sx: e.clientX, sy: e.clientY };
+          }
+
+          drag = {
+            card,
+            cell,
+            sx: e.clientX,
+            sy: e.clientY,
+            off,
+            moved: false,
+          };
           card.style.cssText = `position:fixed;left:${cx - w / 2}px;top:${cy - h / 2}px;width:${w}px;height:${h}px;margin:0`;
           document.body.appendChild(card);
           requestAnimationFrame(() => card.classList.add("dragging"));
-          addEventListener("pointermove", onMove);
+          addEventListener("pointermove", onMove, { passive: false });
           addEventListener("pointerup", onUp);
           addEventListener("pointercancel", onUp);
         }
@@ -1181,8 +1209,11 @@
         function onMove(e) {
           if (!drag) return;
           e.preventDefault();
-          drag.card.style.transform = `translate(${e.clientX - drag.sx}px, ${e.clientY - drag.sy}px) scale(1.05)`;
-          const s = slotAt(e.clientX, e.clientY);
+          const dx = e.clientX - drag.sx,
+            dy = e.clientY - drag.sy;
+          if (Math.hypot(dx, dy) > 8) drag.moved = true;
+          drag.card.style.transform = `translate(${dx}px, ${dy}px) scale(1.05)`;
+          const s = slotAt(e.clientX, e.clientY + drag.off);
           if (hoverSlot && hoverSlot !== s)
             hoverSlot.classList.remove("drag-over");
           if (s) s.classList.add("drag-over");
@@ -1194,19 +1225,33 @@
           removeEventListener("pointermove", onMove);
           removeEventListener("pointerup", onUp);
           removeEventListener("pointercancel", onUp);
-          const { card, cell } = drag;
+          const { card, cell, off, moved } = drag;
           drag = null;
           card.classList.remove("dragging");
           if (hoverSlot) hoverSlot.classList.remove("drag-over");
           hoverSlot = null;
 
-          const slot = slotAt(e.clientX, e.clientY);
+          // toque simples (sem arrastar): só fecha a carta
+          if (!moved) {
+            card.classList.remove("flipped");
+            return returnToCell(card, cell, false);
+          }
+
+          const slot = slotAt(e.clientX, e.clientY + off);
           if (!slot) return returnToCell(card, cell, false); // soltou fora
           const free = slot.querySelector(".ph:not(.full)");
           if (slot.dataset.area === card.dataset.area && free)
             placeOk(card, slot, free, cell);
           else placeWrong(card, cell, slot);
         }
+
+        // tocar fora da carta aberta fecha a carta
+        document.addEventListener("pointerdown", (e) => {
+          if (e.target.closest(".card")) return;
+          gridEl.querySelectorAll(".card.flipped").forEach((c) => {
+            if (!c.dataset.lock) c.classList.remove("flipped");
+          });
+        });
 
         /* ---------- ACERTO: verde em volta, PF conforme ---------- */
         function placeOk(card, slot, ph, cell) {
@@ -1287,58 +1332,95 @@
         }
 
         /* ---------- FIM DE FASE / FIM DE JOGO ---------- */
-        
-        /* ---------- TELAS ---------- */
-        const intro = $("screen-intro"),
-          game = $("screen-game"),
-          end = $("screen-end");
+        function phaseDone() {
+          clearTimeout(moodT);
+          setMood("good");
+          $("phase-end-text").textContent = PHASES[phase].done;
+          $("next-phase-btn").innerHTML =
+            `Ir para a Fase ${phase + 2} ${ic("arrow-right")}`;
+          phaseEndEl.querySelector(".final-face").innerHTML = ic("smile");
+          phaseEndEl.querySelector("h3").textContent =
+            `Fase ${phase + 1} concluída!`;
+          setTimeout(() => phaseEndEl.classList.add("show"), 1300);
+        }
 
-        $("start-btn").addEventListener("click", () => {
-          intro.classList.add("hidden-screen");
+        function finish() {
+          clearTimeout(moodT);
+          setMood("happy");
+          finalEl.querySelector(".final-face").innerHTML = ic("heart", "fill");
+          setTimeout(() => finalEl.classList.add("show"), 1300);
+        }
 
-          setTimeout(() => {
-            intro.style.display = "none";
-            game.style.display = "";
-            game.classList.remove("hidden-screen");
-            startGame();
-          }, 800);
-        });
-
-        document.querySelectorAll(".js-end").forEach((b) =>
-          b.addEventListener("click", () => {
-            game.classList.add("hidden-screen");
-
-            setTimeout(() => {
-              game.style.display = "none";
-              end.style.display = "flex";
-
-              requestAnimationFrame(() => {
-                end.classList.remove("hidden-screen");
-                window.__buildChain();
-              });
-            }, 800);
-          }),
+        $("next-phase-btn").addEventListener("click", () =>
+          loadPhase(phase + 1),
         );
 
-        $("back-btn").addEventListener("click", () => {
-          end.classList.add("hidden-screen");
+        /* ---------- TELAS ---------- */
+       
+/* ---------- TELAS ---------- */
+const intro = $("screen-intro"),
+  game = $("screen-game"),
+  end = $("screen-end");
 
-          setTimeout(() => {
-            end.style.display = "none";
-            game.style.display = "";
-            startGame();
+$("start-btn").addEventListener("click", () => {
+  intro.classList.add("hidden-screen");
+  setTimeout(() => {
+    intro.style.display = "none";
+    game.style.display = "flex"; // CORREÇÃO: reexibe a tela do jogo
+    requestAnimationFrame(() => {
+      game.classList.remove("hidden-screen");
+    });
+  }, 800);
+});
 
-            requestAnimationFrame(() => {
-              game.classList.remove("hidden-screen");
-            });
-          }, 800);
-        });
+document.querySelectorAll(".js-end").forEach((b) =>
+  b.addEventListener("click", () => {
+    game.classList.add("hidden-screen");
+    setTimeout(() => {
+      game.style.display = "none";
+      end.style.display = "flex";
+      requestAnimationFrame(() => {
+        end.classList.remove("hidden-screen");
+        window.__buildChain();
+      });
+    }, 800);
+  }),
+);
 
-        $("reset-btn").addEventListener("click", startGame);
-        $("again-btn").addEventListener("click", startGame);
+$("back-btn").addEventListener("click", () => {
+  end.classList.add("hidden-screen");
 
-        startGame();
+  setTimeout(() => {
+    end.style.display = "none";
+    intro.style.display = "flex";
+
+    requestAnimationFrame(() => {
+      intro.classList.remove("hidden-screen");
+    });
+  }, 800);
+});
+
+$("reset-btn").addEventListener("click", startGame);
+
+// "Jogar novamente" fica dentro da tela do jogo, que já está visível
+$("again-btn").addEventListener("click", () => {
+  intro.style.display = "none";
+  end.style.display = "none";
+  game.style.display = "flex";
+  game.classList.remove("hidden-screen");
+  startGame(); // loadPhase já esconde o #final e o #phase-end
+});
+
+startGame();
+
       })();
+    </script>
+
+    <!-- PWA: funcionar offline / instalar na tela inicial -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
     </script>
   </body>
 </html>
