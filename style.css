@@ -1,13 +1,20 @@
+
 :root {
   --ink: #0b0b0d;
-  --coral: #f08a5d;
-  --orange: #ef7a45;
-  --pink: #e4506a;
-  --peach: #fbe7da;
-  --sand: #ecdccb;
-  --gray: #e4e6e9;
+  --ink-blue: #0b2455; /* texto sobre o céu claro */
+  --ink-blue-soft: #43557a;
+  --accent: #3b8be0; /* destaque azul */
   --ok: #1f9d55;
   --bad: #e5322d;
+
+  /* cores da foto da capa: céu (de cima para o horizonte) e mesa */
+  --sky-0: #eef4fa;
+  --sky-1: #dce9f5;
+  --sky-2: #cbdff2;
+  --sky-3: #bed7ef;
+  --tbl-0: #173a78;
+  --tbl-1: #0f2b64;
+  --tbl-2: #0a1d4b;
 }
 * {
   box-sizing: border-box;
@@ -16,10 +23,12 @@ body,
 html {
   margin: 0;
   padding: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
+  height: 100dvh; /* acompanha a barra do navegador do celular */
   overflow: hidden;
-  background: #fff;
+  overscroll-behavior: none;
+  background: var(--sky-0);
   color: var(--ink);
   font-family:
     Montserrat,
@@ -31,6 +40,13 @@ html {
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+input {
+  -webkit-user-select: text;
+  user-select: text;
+  touch-action: auto;
 }
 .screen {
   position: absolute;
@@ -48,10 +64,38 @@ html {
   transform: scale(1.05);
 }
 
-/* ================= CAPA (tela cheia) ================= */
+/* =====================================================
+   CAPA · o fundo repete o degradê da própria foto
+   ===================================================== */
 #screen-intro {
-  background: #fff;
-  color: var(--ink);
+  /* altura da área da arte e tamanho da foto (fração dessa altura) */
+  --art-h: 100dvh;
+  --ih: 0.97;
+
+  /* posições do degradê: acompanham a foto (0.642 = altura do horizonte nela) */
+  --p0: calc(var(--art-h) * (1 - var(--ih)));
+  --p29: calc(var(--p0) + var(--art-h) * var(--ih) * 0.29);
+  --p50: calc(var(--p0) + var(--art-h) * var(--ih) * 0.5);
+  --ph: calc(var(--p0) + var(--art-h) * var(--ih) * 0.642);
+  --p82: calc(var(--p0) + var(--art-h) * var(--ih) * 0.82);
+
+  /* cores do texto (sobre o céu claro) */
+  --t-top: var(--ink-blue);
+  --t-soft: var(--ink-blue-soft);
+
+  background: linear-gradient(
+    to bottom,
+    var(--sky-0) 0,
+    var(--sky-0) var(--p0),
+    var(--sky-1) var(--p29),
+    var(--sky-2) var(--p50),
+    var(--sky-3) var(--ph),
+    var(--tbl-0) var(--ph),
+    var(--tbl-1) var(--p82),
+    var(--tbl-2) var(--art-h),
+    var(--tbl-2) 100%
+  );
+  color: var(--t-top);
   align-items: center;
   justify-content: center;
 }
@@ -61,11 +105,12 @@ html {
   align-items: center;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   padding: 0 2vw;
   gap: 1vw;
 }
 
-/* A arte fica "apoiada" na borda de baixo da tela */
+/* A arte fica "apoiada" na borda de baixo da área */
 .kv-art {
   width: 100%;
   height: 100%;
@@ -75,84 +120,81 @@ html {
   justify-content: center;
 }
 
-/* Palco da arte: mesma proporção do recorte (1305 x 1220) */
+/* Palco da arte: a foto é quadrada */
 .kv-stage {
-  --floor-top: #d6dcdc; /* cinza do chão, parte de cima da faixa */
-  --floor-mid: #dde2e2;
-  --floor-bot: #eceeee; /* cinza do chão, parte de baixo da faixa */
   position: relative;
-  width: min(100cqw, calc(100cqh * 1.0697));
-  aspect-ratio: 1305 / 1220;
+  width: min(100cqw, calc(100cqh * var(--ih)));
+  aspect-ratio: 1 / 1;
   animation: rise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-/* Chão cinza em largura total: vai de uma borda da tela à outra */
-.kv-floor {
-  position: absolute;
-  left: -100vw;
-  right: -100vw;
-  top: 90.8%; /* onde começa a faixa cinza do PNG */
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    var(--floor-top) 0%,
-    var(--floor-mid) 55%,
-    var(--floor-bot) 100%
-  );
-}
-
-/* Cobre o branco que o PNG tem na ponta direita do chão */
+/* Sem faixa cinza (elementos antigos do HTML ficam escondidos) */
+.kv-floor,
 .kv-floor-fix {
-  left: auto;
-  right: 0;
-  width: 16%;
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 85%);
-  mask-image: linear-gradient(to right, transparent 0%, #000 85%);
-  pointer-events: none;
+  display: none;
 }
 
-/* Recorte do PNG: esfumaça só a lateral esquerda */
+/* Foto: bordas esfumaçadas para se fundir ao degradê do fundo */
 .kv-crop {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(0, 0, 0, 0.45) 12%,
-    #000 28%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(0, 0, 0, 0.45) 12%,
-    #000 28%
-  );
+  -webkit-mask-image:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      #000 9%,
+      #000 91%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 6%,
+      #000 92%,
+      transparent 100%
+    );
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      #000 9%,
+      #000 91%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 6%,
+      #000 92%,
+      transparent 100%
+    );
+  mask-composite: intersect;
 }
 
-/* Ajuste estes 3 valores se o recorte não ficar perfeito:
-   --w = largura do PNG inteiro em relação à área recortada
-   --x = deslocamento horizontal (negativo)
-   --y = deslocamento vertical (negativo) */
 #kv {
-  --w: 122.6%;
-  --x: -9%;
-  --y: -33.2%;
   position: absolute;
-  width: var(--w);
-  height: auto;
-  left: var(--x);
-  top: var(--y);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   max-width: none;
   display: block;
 }
 
+/* Coluna de texto: título em cima (céu), campo e botão embaixo (mesa) */
 .kv-text {
+  --field-w: clamp(240px, 24vw, 440px);
+  --field-h: clamp(3rem, 4.2vw, 4rem);
   position: relative;
   z-index: 2;
+  align-self: stretch;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding: 8vh 0 6vh;
+  color: var(--t-top);
   font-family: Montserrat, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 .kv-text > * {
@@ -206,29 +248,59 @@ html {
   bottom: -0.2em;
   width: 100%;
   height: 0.07em;
-  background: var(--ink);
+  background: currentColor;
 }
 .pt {
   font-size: clamp(0.85rem, 1.2vw, 1.35rem);
   line-height: 1.4;
-  color: #444;
+  color: var(--t-soft);
   margin: 4vh 0 0;
   max-width: 34ch;
 }
 .pt b {
-  color: var(--ink);
+  color: var(--t-top);
 }
+
+/* campo de nome e botão: mesmo tamanho, mesma fonte (sempre sobre a mesa azul) */
+.kv-input,
 .kv-btn {
-  margin-top: 3vh;
-  background: var(--ink);
-  color: #fff;
-  border: 0;
-  border-radius: 999px;
+  box-sizing: border-box;
+  width: var(--field-w);
+  height: var(--field-h);
+  padding: 0 1.4em;
   font:
-    600 clamp(1rem, 1.6vw, 1.5rem) Montserrat,
+    600 clamp(1rem, 1.4vw, 1.4rem) Montserrat,
     "Segoe UI",
     sans-serif;
-  padding: 0.8em 2em;
+  border-radius: 999px;
+}
+.kv-input {
+  margin-top: auto; /* empurra campo e botão para a parte de baixo (mesa) */
+  border: 2px solid #fff;
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.kv-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+.kv-input:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.14);
+}
+.kv-input.err {
+  border-color: var(--bad);
+  box-shadow: 0 0 0 3px rgba(229, 50, 45, 0.3);
+}
+.kv-btn {
+  margin-top: 1.4vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  background: #fff;
+  color: var(--tbl-2);
+  border: 0;
   cursor: pointer;
   transition:
     transform 0.3s ease,
@@ -236,7 +308,7 @@ html {
 }
 .kv-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 .kv-btn:active {
   transform: scale(0.97);
@@ -251,12 +323,11 @@ html {
   margin: 0;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
-  font-size: clamp(26px, 2.1vw, 44px);   /* tamanho do "L'ORÉAL" */
+  font-size: clamp(26px, 2.1vw, 44px);
   line-height: 1;
   letter-spacing: 0.01em;
-  color: #0d0d0d;
+  color: var(--ink-blue); /* sobre o céu claro, nos dois formatos de tela */
 }
-
 
 .logo {
   margin-top: 6vh;
@@ -271,31 +342,58 @@ html {
   letter-spacing: 0.12em;
   margin-top: 0.3em;
 }
+
+/* capa em tela vertical (celular em pé): foto em cima, texto sobre a mesa azul */
 @media (max-aspect-ratio: 1/1) {
+  #screen-intro {
+    --art-h: 38dvh;
+    --ih: 0.95;
+    --t-top: #fff;
+    --t-soft: rgba(255, 255, 255, 0.82);
+  }
   .kv {
     grid-template-columns: 1fr;
-    grid-template-rows: 42% 58%;
+    grid-template-rows: 38% 62%;
     height: 100vh;
+    height: 100dvh;
     gap: 0;
   }
   .kv-text {
+    --field-w: min(86vw, 420px);
+    --field-h: 3.1rem;
+    align-self: center;
     padding: 0 7vw;
   }
   .kv-text h1 {
-    font-size: clamp(1.8rem, 9.5vw, 4rem);
+    font-size: clamp(1.7rem, 8.5vw, 3.6rem);
   }
   .qd {
-    font-size: clamp(0.8rem, 3.4vw, 1.3rem);
+    font-size: clamp(0.8rem, 3.2vw, 1.2rem);
+    margin-bottom: 1.6vh;
   }
   .pt {
-    font-size: clamp(0.85rem, 3.6vw, 1.2rem);
+    font-size: clamp(0.8rem, 3.3vw, 1.1rem);
+    margin-top: 2vh;
   }
-  .kv-btn {
-    font-size: clamp(1rem, 4vw, 1.4rem);
+  .kv-input {
+    margin-top: 2vh;
   }
   .logo {
     font-size: clamp(1.1rem, 5vw, 1.8rem);
     margin-top: 4vh;
+  }
+}
+/* celulares baixos: compacta mais um pouco */
+@media (max-aspect-ratio: 1/1) and (max-height: 700px) {
+  .kv-text h1 {
+    font-size: clamp(1.5rem, 7.5vw, 3rem);
+  }
+  .pt {
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+  .kv-text {
+    --field-h: 2.8rem;
   }
 }
 
@@ -315,19 +413,30 @@ html {
   animation: rise 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   animation-delay: var(--d, 0s);
 }
+
 .flow {
-  animation: dash 1s linear infinite;
+  opacity: 0;
+  animation: rise 3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
+
 @keyframes dash {
   to {
     stroke-dashoffset: -22;
   }
 }
 
-/* ================= JOGO ================= */
+/* =====================================================
+   JOGO · céu em cima (cartas) e mesa azul embaixo (etapas)
+   ===================================================== */
 #screen-game {
-  background: #fff;
-  color: var(--ink);
+  background: linear-gradient(
+    to bottom,
+    var(--sky-0) 0%,
+    var(--sky-1) 30%,
+    var(--sky-2) 65%,
+    var(--sky-3) 100%
+  );
+  color: var(--ink-blue);
   padding: 2.4vh 2vw 2vh;
   gap: 1.2vh;
   overflow: hidden;
@@ -339,7 +448,7 @@ html {
   top: 0;
   width: 100%;
   height: 0.8vh;
-  background: var(--coral);
+  background: linear-gradient(90deg, var(--ink-blue), var(--accent));
 }
 .g-head {
   flex: none;
@@ -358,7 +467,7 @@ html {
   letter-spacing: 0.06em;
 }
 .g-phase {
-  background: var(--coral);
+  background: var(--ink-blue);
   color: #fff;
   border-radius: 999px;
   padding: 0.3vh 0.9vw;
@@ -379,7 +488,7 @@ html {
 }
 .g-hint {
   margin: 0.8vh 0 0;
-  color: #666;
+  color: var(--ink-blue-soft);
   font-size: clamp(0.7rem, 0.95vw, 1.15rem);
 }
 .g-right {
@@ -393,7 +502,9 @@ html {
   align-items: center;
   font-weight: 600;
   font-size: clamp(0.75rem, 1vw, 1.2rem);
-  background: var(--sand);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(11, 36, 85, 0.12);
+  color: var(--ink-blue);
   padding: 1vh 1.1vw;
 }
 .score b {
@@ -409,9 +520,9 @@ html {
   font:
     600 clamp(0.75rem, 1vw, 1.2rem) Montserrat,
     sans-serif;
-  color: var(--ink);
-  background: #fff;
-  border: 2px solid var(--ink);
+  color: var(--ink-blue);
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid var(--ink-blue);
   border-radius: 999px;
   padding: 1vh 1.5vw;
   cursor: pointer;
@@ -424,18 +535,17 @@ html {
   transform: scale(1.04);
 }
 .g-btn-dark {
-  background: var(--ink);
+  background: var(--ink-blue);
   color: #fff;
 }
 .g-btn-dark:hover {
-  background: var(--ink);
-  border-color: var(--ink);
+  background: var(--ink-blue);
+  border-color: var(--ink-blue);
 }
 
 /* ---- fileira de cartas (parte de cima) ---- */
 .g-cards {
-  --pop: 1.4; /* quanto o card cresce ao virar (ajustado pelo JS) */
-  /* largura do card: divide a tela pelo nº de cards que restam (--n) */
+  --pop: 1.4;
   --cw: min(calc((96vw - (var(--n, 8) - 1) * 0.8vw) / var(--n, 8)), 30vh);
   flex: 1 1 auto;
   min-height: 0;
@@ -451,10 +561,9 @@ html {
   height: calc(var(--cw) * 254 / 190);
   transition:
     width 0.45s ease,
-    height 0.45s ease; /* os cards deslizam ao reorganizar */
+    height 0.45s ease;
 }
 
-/* card virado cresce no lugar para facilitar a leitura */
 .cell > .card {
   transform-origin: center;
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -469,7 +578,7 @@ html {
   position: relative;
   width: 100%;
   height: 100%;
-  container-type: inline-size; /* permite medir tudo em cqw (% da largura da carta) */
+  container-type: inline-size;
   cursor: pointer;
   z-index: 20;
   touch-action: none;
@@ -483,7 +592,7 @@ html {
   transition:
     transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
     box-shadow 0.3s ease;
-  box-shadow: 0 0 10px 1px #000000ee;
+  box-shadow: 0 6px 18px rgba(10, 29, 75, 0.45);
   border-radius: 2.6cqw;
 }
 .card.flipped .content {
@@ -496,14 +605,13 @@ html {
   inset: 0;
   width: 100%;
   height: 100%;
-  background-color: #151515;
+  background-color: #0a1530;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   border-radius: 2.6cqw;
   overflow: hidden;
 }
 
-/* verso (antes de virar): borda animada + selo */
 .back {
   display: flex;
   justify-content: center;
@@ -519,10 +627,10 @@ html {
   background: linear-gradient(
     90deg,
     transparent,
-    #ff9966,
-    #ff9966,
-    #ff9966,
-    #ff9966,
+    #7fb4ee,
+    #7fb4ee,
+    #7fb4ee,
+    #7fb4ee,
     transparent
   );
   animation: rotation_481 5000ms infinite linear;
@@ -543,7 +651,7 @@ html {
   width: 82cqw;
   height: auto;
   display: block;
-  filter: invert(1); /* selo preto vira branco no fundo escuro */
+  filter: invert(1);
   pointer-events: none;
 }
 .back-content strong {
@@ -551,7 +659,7 @@ html {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #ffc9ad;
+  color: #bcd9f7;
 }
 @keyframes rotation_481 {
   0% {
@@ -562,7 +670,6 @@ html {
   }
 }
 
-/* frente (depois de virar): texto da etapa */
 .front {
   transform: rotateY(180deg);
   color: #fff;
@@ -576,13 +683,13 @@ html {
   width: 47cqw;
   height: 47cqw;
   border-radius: 50%;
-  background-color: #ffbb66;
+  background-color: #5ea0e8;
   position: relative;
   filter: blur(8cqw);
   animation: floating 2600ms infinite linear;
 }
 .c-bottom {
-  background-color: #ff8866;
+  background-color: #2f6fd1;
   left: 26cqw;
   top: 0;
   width: 79cqw;
@@ -590,7 +697,7 @@ html {
   animation-delay: -800ms;
 }
 .c-right {
-  background-color: #ff2233;
+  background-color: #9cc7f5;
   left: 84cqw;
   top: -42cqw;
   width: 16cqw;
@@ -700,20 +807,41 @@ html {
   }
 }
 
-/* ---- etapas (parte de baixo) ---- */
+/* ---- etapas (parte de baixo, sobre a "mesa" azul) ---- */
 .g-chain {
+  position: relative;
+  z-index: 0;
   flex: none;
   height: 30vh;
   display: grid;
   grid-template-columns: repeat(var(--ns, 4), minmax(0, 1fr)) minmax(0, 0.8fr);
   gap: 0.8vw;
 }
+/* a mesa: faixa azul que vai de uma borda da tela à outra, até o fim */
+.g-chain::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -2vw;
+  right: -2vw;
+  top: -1.6vh;
+  bottom: -6vh;
+  background: linear-gradient(
+    to bottom,
+    var(--tbl-0) 0%,
+    var(--tbl-1) 45%,
+    var(--tbl-2) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 -0.8vh 1.6vh -0.8vh rgba(10, 29, 75, 0.25);
+}
 .slot {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border: 2px dashed #cfc3b8;
-  background: #fbf8f5;
+  border: 2px dashed rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.07);
   overflow: hidden;
   transition:
     transform 0.2s ease,
@@ -733,7 +861,8 @@ html {
   line-height: 1.15;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  background: var(--sand);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
 }
 .slot-body {
   flex: 1;
@@ -749,7 +878,7 @@ html {
   flex: 1 1 0;
   max-width: calc(50% - 0.3vw);
   aspect-ratio: 190 / 254;
-  border: 1px dashed #dccfc3;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
 }
 .ph.full {
   border: 0;
@@ -759,8 +888,8 @@ html {
   height: 100%;
 }
 .slot.drag-over {
-  border-color: var(--orange);
-  background: #fff1e6;
+  border-color: #9cc7f5;
+  background: rgba(127, 180, 238, 0.28);
   transform: scale(1.03);
 }
 .slot.done {
@@ -803,8 +932,9 @@ html {
   gap: 1vh;
   padding: 1vh;
   text-align: center;
-  background: var(--peach);
-  border: 2px solid var(--coral);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.45);
   transition:
     background 0.3s ease,
     border-color 0.3s ease;
@@ -820,12 +950,12 @@ html {
   letter-spacing: 0.04em;
 }
 .consumer.sad {
-  background: #ffe1df;
+  background: rgba(229, 50, 45, 0.3);
   border-color: var(--bad);
   animation: shake 0.5s ease;
 }
 .consumer.happy {
-  background: #e0f5e8;
+  background: rgba(31, 157, 85, 0.3);
   border-color: var(--ok);
 }
 .consumer.happy .face {
@@ -851,6 +981,7 @@ html {
   opacity: 0;
   pointer-events: none;
   z-index: 900;
+  box-shadow: 0 8px 24px rgba(10, 29, 75, 0.3);
   transition:
     opacity 0.3s ease,
     transform 0.3s ease;
@@ -867,7 +998,7 @@ html {
   background: var(--bad);
 }
 .toast.info {
-  background: var(--ink);
+  background: var(--ink-blue);
 }
 
 /* telas de fim de fase / fim de jogo */
@@ -882,7 +1013,12 @@ html {
   gap: 2.5vh;
   padding: 6vw;
   text-align: center;
-  background: rgba(255, 255, 255, 0.97);
+  color: var(--ink-blue);
+  background: linear-gradient(
+    to bottom,
+    rgba(238, 244, 250, 0.98),
+    rgba(190, 215, 239, 0.98)
+  );
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.6s ease;
@@ -908,7 +1044,7 @@ html {
   max-width: 40ch;
   font-size: clamp(1rem, 1.8vw, 2.2rem);
   line-height: 1.35;
-  color: #444;
+  color: var(--ink-blue-soft);
 }
 .final-btns {
   display: flex;
@@ -916,26 +1052,106 @@ html {
   margin-top: 1vh;
 }
 
-/* ================= RESPOSTAS / QR (fundo escuro) ================= */
+/* ================= PÓDIO ================= */
+#podium {
+  background: linear-gradient(to bottom, var(--sky-0), var(--sky-3)); /* opaco */
+}
+.pod {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2vw;
+  width: 100%;
+}
+.pod-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 26vw;
+  max-width: 190px;
+}
+.pod-name {
+  font-weight: 800;
+  font-size: clamp(0.8rem, 1.1vw, 1.3rem);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.pod-time {
+  font-size: clamp(0.65rem, 0.9vw, 1rem);
+  color: var(--ink-blue-soft);
+  margin-bottom: 0.6vh;
+  text-align: center;
+}
+.pod-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.6vh;
+  font-weight: 900;
+  font-size: 2rem;
+  color: #fff;
+  border-radius: 10px 10px 0 0;
+}
+.pod-col.p1 .pod-bar {
+  height: 17vh;
+  background: #f5b301;
+}
+.pod-col.p2 .pod-bar {
+  height: 12vh;
+  background: #aab2bd;
+}
+.pod-col.p3 .pod-bar {
+  height: 8vh;
+  background: #cd7f32;
+}
+.pod-col.me .pod-name,
+.pod-list li.me {
+  color: #1d5fb8;
+}
+.pod-list {
+  width: min(100%, 420px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pod-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 3vw;
+  padding: 0.8vh 3vw;
+  font-size: clamp(0.8rem, 1vw, 1.1rem);
+  border-bottom: 1px solid rgba(11, 36, 85, 0.15);
+}
+.pod-list li::before {
+  content: counter(list-item) "º";
+  font-weight: 800;
+  margin-right: 2vw;
+}
+.pod-list li span {
+  flex: 1;
+  text-align: left;
+}
+#pod-status {
+  font-size: 0.85rem;
+  color: var(--ink-blue-soft);
+}
+
+/* ================= RESPOSTAS / QR (azul-marinho) ================= */
 #screen-end {
   color: #fff;
   background:
     radial-gradient(
-      circle at 75% 40%,
-      rgba(29, 78, 216, 0.28) 0%,
+      circle at 75% 35%,
+      rgba(94, 160, 232, 0.28) 0%,
       rgba(0, 0, 0, 0) 45%
     ),
     radial-gradient(
-      circle at 30% 80%,
-      rgba(168, 85, 247, 0.18) 0%,
+      circle at 25% 85%,
+      rgba(59, 139, 224, 0.18) 0%,
       rgba(0, 0, 0, 0) 40%
     ),
-    radial-gradient(
-      circle at 85% 80%,
-      rgba(251, 146, 60, 0.12) 0%,
-      rgba(0, 0, 0, 0) 35%
-    ),
-    #050505;
+    linear-gradient(to bottom, var(--tbl-1), var(--tbl-2));
 }
 .cover-wrap {
   position: absolute;
@@ -969,10 +1185,10 @@ html {
   gap: calc(var(--u) * 1.6);
   padding: calc(var(--u) * 1.4);
   border-radius: calc(var(--u) * 2);
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.09);
   -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   opacity: 0;
   animation: rise 1s cubic-bezier(0.2, 0.8, 0.2, 1) 1.2s forwards;
@@ -1016,7 +1232,7 @@ html {
   margin: calc(var(--u) * 0.7) 0 0;
   font-size: calc(var(--u) * 1.3);
   line-height: 1.3;
-  color: #9ca3af;
+  color: #b9c9e3;
 }
 .end-btn {
   position: absolute;
@@ -1024,8 +1240,8 @@ html {
   bottom: 1.2rem;
   z-index: 30;
   color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border-radius: 999px;
@@ -1036,7 +1252,7 @@ html {
   transition: all 0.3s ease;
 }
 .end-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.2);
 }
 .back-btn {
   bottom: auto;
@@ -1048,5 +1264,163 @@ html {
     right: auto;
     left: 1rem;
     bottom: 1rem;
+  }
+}
+
+/* =====================================================
+   MOBILE · RETRATO (jogo)
+   ===================================================== */
+@media (max-width: 700px) and (max-aspect-ratio: 1/1) {
+  #screen-game {
+    padding: calc(env(safe-area-inset-top, 0px) + 1.6vh) 3vw
+      calc(env(safe-area-inset-bottom, 0px) + 1.2vh);
+    gap: 1vh;
+  }
+  #screen-game::before {
+    height: 0.6vh;
+  }
+  /* a mesa acompanha o novo padding lateral */
+  .g-chain::before {
+    left: -3vw;
+    right: -3vw;
+  }
+
+  /* ---- cabeçalho empilhado ---- */
+  .g-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1vh;
+  }
+  .g-kicker {
+    font-size: 0.65rem;
+    gap: 2vw;
+    margin: 0 0 0.3vh;
+  }
+  .g-phase {
+    padding: 0.3vh 2.5vw;
+  }
+  .g-title h2 {
+    font-size: 1.25rem;
+  }
+  .g-hint {
+    font-size: 0.68rem;
+    margin-top: 0.4vh;
+    line-height: 1.25;
+  }
+  .g-right {
+    gap: 2vw;
+    flex-wrap: wrap;
+  }
+  .score {
+    font-size: 0.7rem;
+    padding: 0.8vh 2.5vw;
+  }
+  .g-btn {
+    font-size: 0.7rem;
+    padding: 0.9vh 3vw;
+  }
+
+  /* ---- cartas: grade 4 x 2 que cabe na altura livre ---- */
+  .g-cards {
+    --mpop: 2.55; /* quanto a carta cresce ao virar */
+    flex: 1 1 0; /* ocupa só o espaço que sobra */
+    min-height: 0;
+    container-type: size; /* permite usar a altura livre (cqh) */
+    position: relative;
+    z-index: 50; /* carta aberta fica acima das etapas */
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 1vh 1.6vw;
+    align-items: center;
+    justify-items: center;
+  }
+  .cell {
+    --ox: left;
+    --oy: top;
+    /* largura = menor entre a coluna e o que cabe na altura (2 linhas) */
+    width: min(100%, calc((100cqh - 1vh) / 2 * 190 / 254));
+    height: auto;
+    aspect-ratio: 190 / 254;
+  }
+  /* colunas 3 e 4 crescem para a esquerda; 2ª linha cresce para cima */
+  .cell:nth-child(4n + 3),
+  .cell:nth-child(4n) {
+    --ox: right;
+  }
+  .cell:nth-child(n + 5) {
+    --oy: bottom;
+  }
+  .cell > .card {
+    transform-origin: var(--ox) var(--oy);
+  }
+  .cell > .card.flipped {
+    transform: scale(var(--mpop));
+  }
+
+  /* ---- etapas: 2 x 2 + consumidor em faixa ---- */
+  .g-chain {
+    height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1vh 2vw;
+  }
+  .slot-h {
+    min-height: 3.6vh;
+    font-size: 0.6rem;
+  }
+  .slot-body {
+    padding: 0.8vh 1.5vw;
+    gap: 1.5vw;
+  }
+  .ph {
+    max-width: calc(50% - 0.75vw);
+    max-height: 17vh; /* limita a altura dos espaços das cartas */
+  }
+  .consumer {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 3vw;
+    padding: 0.6vh 2vw;
+  }
+  .consumer .face {
+    font-size: 2rem;
+  }
+  .consumer small {
+    font-size: 0.65rem;
+  }
+
+  /* ---- aviso e telas finais ---- */
+  .toast {
+    top: 14vh;
+    max-width: 92vw;
+    font-size: 0.8rem;
+    padding: 1.2vh 4vw;
+  }
+  .final {
+    padding: 8vw;
+  }
+  .final-face {
+    font-size: 5rem;
+  }
+  .final h3 {
+    font-size: 1.7rem;
+  }
+  .final p {
+    font-size: 1rem;
+  }
+  .final-btns {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5vh;
+  }
+  .final-btns .g-btn {
+    font-size: 0.95rem;
+    padding: 1.4vh 6vw;
+  }
+
+  /* ---- tela de respostas ---- */
+  .end-btn {
+    font-size: 0.85rem;
+    padding: 0.6rem 1.1rem;
   }
 }
