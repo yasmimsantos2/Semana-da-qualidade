@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="pt-BR">
   <head>
@@ -17,7 +18,6 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600;700;800;900&display=swap"
     />
 
-    <!-- ÍCONES: tamanho e traço (fica aqui para não depender do style.css) -->
     <style>
       svg.ic {
         display: inline-block;
@@ -38,14 +38,12 @@
         fill: currentColor;
         stroke: none;
       }
-
       .g-btn svg.ic,
       .end-btn svg.ic {
         width: 1.1em !important;
         height: 1.1em !important;
         margin: 0 0.15em;
       }
-
       .final-face {
         color: #2dd4bf;
       }
@@ -62,7 +60,6 @@
       .consumer.happy .face {
         color: #22c55e;
       }
-
       .toast svg.ic {
         width: 1.1em !important;
         height: 1.1em !important;
@@ -112,7 +109,6 @@
       </symbol>
     </svg>
 
-    <!-- função auxiliar: ic("nome") devolve o HTML do ícone (já com tamanho) -->
     <script>
       window.ic = (name, cls = "") =>
         `<svg class="ic ${cls}" width="1em" height="1em" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
@@ -129,7 +125,7 @@
               <img
                 id="kv"
                 src="IMG/CAPA.png"
-                alt="L'Oréal Quality Day 2026 - Experience Trust In The Making"
+                alt="L'Oréal Workshop 2026 - Experience Trust In The Making"
               />
             </div>
             <div class="kv-floor kv-floor-fix"></div>
@@ -137,7 +133,7 @@
         </div>
 
         <div class="kv-text">
-          <p class="qd">QUALITY DAY<br />2026</p>
+          <p class="qd">Workshop CM<br />2026</p>
           <h1>
             <span class="b">Experience<br />Trust</span
             ><span class="l"><span class="in">In</span> the making</span>
@@ -147,6 +143,14 @@
             de BPF em cada etapa e monte o caminho para um produto conforme e um
             consumidor satisfeito.
           </p>
+          <input
+            id="player-name"
+            class="kv-input"
+            type="text"
+            maxlength="24"
+            placeholder="Digite seu nome"
+            autocomplete="off"
+          />
           <button id="start-btn" class="kv-btn">
             Começar <span aria-hidden="true">→</span>
           </button>
@@ -167,7 +171,9 @@
         </div>
         <div class="g-right">
           <div class="score">
-            <span><b id="score-ok">0</b>/14 conformes</span>
+            <span>⏱ <b id="timer">0:00.0</b></span>
+            <span class="sep">·</span>
+            <span><b id="score-ok">0</b>/16 conformes</span>
             <span class="sep">·</span>
             <span class="nc"><b id="score-nc">0</b> NC</span>
           </div>
@@ -222,7 +228,9 @@
           Todas as áreas contribuíram para um produto feito com qualidade,
           respeito às BPF e atenção ao consumidor.
         </p>
+        <p id="final-stats" style="font-weight: 800"></p>
         <div class="final-btns">
+          <button class="g-btn g-btn-dark" id="podium-btn">🏆 Ver pódio</button>
           <button class="g-btn g-btn-dark js-end">
             Confirmar presença
             <svg class="ic" width="1em" height="1em" aria-hidden="true">
@@ -235,6 +243,17 @@
             </svg>
             Jogar novamente
           </button>
+        </div>
+      </div>
+
+      <!-- pódio -->
+      <div id="podium" class="final">
+        <h3>🏆 Pódio</h3>
+        <div class="pod" id="pod-top"></div>
+        <ol class="pod-list" id="pod-list"></ol>
+        <p id="pod-status"></p>
+        <div class="final-btns">
+          <button class="g-btn g-btn-dark" id="pod-close">Voltar</button>
         </div>
       </div>
     </div>
@@ -317,7 +336,6 @@
           return `rgb(${[n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.max(0, Math.min(255, Math.round(v * f))))})`;
         };
 
-        /* marcador de seta verde-água (ramo do Laboratório) */
         const defs = svg.querySelector("defs") || E("defs");
         if (!svg.querySelector("#arT")) {
           const mk = E(
@@ -439,11 +457,7 @@
           return { P, box, cyl, line, truck, rack };
         }
 
-        /* ===== PLATAFORMAS (índice = ordem de C, P e T) =====
-           0 Recebimento · 1 Armazenagem · 2 Produção · 3 Envase
-           4 Laboratório (liberação) · 5 Terceiro · 6 Expedição */
         const stages = [
-          // 0 Recebimento
           (c) => {
             c.truck(-2.8, -2.6);
             c.truck(-2.8, -1.5);
@@ -451,7 +465,6 @@
             c.box(0.7, 0.4, 0.7, 0.5, 0.5, "#3b82c4", 0.55);
             c.box(-0.2, 1.8, 0.9, 0.8, 0.5, "#b88a4a");
           },
-          // 1 Armazenagem
           (c) => {
             c.rack(-2.6, -2.2, "#7a5a30");
             c.rack(-1.2, -2.2, "#9a7440");
@@ -460,7 +473,6 @@
             c.box(0.6, 0.4, 2, 2, 1.3, "#9fd0ff", 0, 0.2);
             c.box(1, 0.9, 1, 0.8, 0.5, "#e6eaf2");
           },
-          // 2 Produção
           (c) => {
             const [x, y] = c.cyl(-0.8, -0.8, 1.1, 1.7, "#e8edf5");
             E(
@@ -479,7 +491,6 @@
             c.cyl(1.7, 1.4, 0.5, 0.9, "#cbd5e1");
             c.cyl(0.9, 2.1, 0.45, 0.7, "#cbd5e1");
           },
-          // 3 Envase e embalagem
           (c) => {
             c.cyl(-2.2, -2.2, 0.5, 1.2, "#e8edf5");
             c.cyl(-0.9, -2.2, 0.5, 1.2, "#e8edf5");
@@ -496,29 +507,26 @@
               c.box(-2.8, 1.7 + i * 0.5, 0.4, 0.4, 0.7, k),
             );
           },
-          // 4 LABORATÓRIO (ênfase: borda verde-água)
           (c) => {
-            c.box(-2, -1.8, 4, 3.6, 1.6, "#bfe6ff", 0, 0.18); // sala de vidro
-            c.box(-1.6, -1.2, 2.8, 0.7, 0.6, "#e6eaf2"); // bancada 1
+            c.box(-2, -1.8, 4, 3.6, 1.6, "#bfe6ff", 0, 0.18);
+            c.box(-1.6, -1.2, 2.8, 0.7, 0.6, "#e6eaf2");
             c.cyl(-1.2, -0.85, 0.22, 0.5, "#2dd4bf", 0.6);
             c.cyl(-0.4, -0.85, 0.22, 0.7, "#6fb7ff", 0.6);
             c.cyl(0.4, -0.85, 0.22, 0.4, "#f5c518", 0.6);
-            c.box(-1.4, 0.4, 2.2, 0.7, 0.6, "#e6eaf2"); // bancada 2
-            c.box(0.9, 0.5, 0.5, 0.4, 0.9, "#94a3b8"); // equipamento
-            c.box(-2.8, 1.2, 0.6, 0.6, 0.5, "#2dd4bf"); // amostras
+            c.box(-1.4, 0.4, 2.2, 0.7, 0.6, "#e6eaf2");
+            c.box(0.9, 0.5, 0.5, 0.4, 0.9, "#94a3b8");
+            c.box(-2.8, 1.2, 0.6, 0.6, 0.5, "#2dd4bf");
           },
-          // 5 FÁBRICA DO TERCEIRO
           (c) => {
-            c.box(-2.4, -1.8, 3.4, 2.6, 1.2, "#cbd5e1"); // galpão
-            c.box(-2.4, -1.8, 3.4, 0.2, 0.2, "#e5484d", 1.2); // faixa do telhado
-            c.cyl(0.6, -1.3, 0.25, 1.2, "#94a3b8", 1.2); // chaminé
+            c.box(-2.4, -1.8, 3.4, 2.6, 1.2, "#cbd5e1");
+            c.box(-2.4, -1.8, 3.4, 0.2, 0.2, "#e5484d", 1.2);
+            c.cyl(0.6, -1.3, 0.25, 1.2, "#94a3b8", 1.2);
             c.truck(-2, 1.4);
-            c.cyl(1.8, -1.2, 1, 0.25, "#8794a8"); // símbolo do produto
+            c.cyl(1.8, -1.2, 1, 0.25, "#8794a8");
             c.cyl(1.8, -1.2, 0.5, 1.5, "#9bd02b", 0.25);
             c.cyl(1.8, -1.2, 0.25, 0.35, "#6aa81a", 1.75);
             c.cyl(1.8, -1.2, 0.28, 0.2, "#e8edf5", 2.1);
           },
-          // 6 Expedição
           (c) => {
             c.truck(-2.4, -1.8);
             c.truck(-2.4, -0.6);
@@ -578,11 +586,9 @@
           (E("text", { x, y, fill, "font-size": fs }, svg).textContent = s);
         const S2 = (p) => p.map((a) => a.join(",")).join(" ");
 
-        /* QR code preso ao desenho (guarda a referência e o estilo original) */
         const qrCard = document.querySelector(".qr-card");
         const qrStyle = qrCard ? qrCard.getAttribute("style") : null;
 
-        /* ===== TEXTOS (título, linhas, cor do texto, cor da etiqueta) ===== */
         const T = [
           [
             "Recebimento",
@@ -611,49 +617,43 @@
           "SF: semiacabado · PF: produto acabado",
         ];
 
-        // P = [x, y, fromX, fromY, toX, toY]
         const MODES = {
           wide: {
             vb: [1600, 900],
             f: { fs: 19, tf: 14, th: 26, lh: 23, off: 50, cw: 8.6 },
             C: [
-              [250, 200], // Recebimento
-              [540, 300], // Armazenagem
-              [830, 400], // Produção
-              [1120, 500], // Envase
-              [1120, 740], // Laboratório
-              [1440, 400], // Terceiro
-              [1440, 730], // Expedição
+              [250, 200],
+              [540, 300],
+              [830, 400],
+              [1120, 500],
+              [1120, 740],
+              [1440, 400],
+              [1440, 730],
             ],
             P: [
-              [330, 22, 335, 52, 300, 160], // Recebimento
-              [610, 95, 600, 130, 585, 260], // Armazenagem
-              [870, 165, 862, 195, 850, 350], // Produção
-              [1010, 290, 1000, 318, 1100, 455], // Envase
-              [680, 655, 910, 725, 1000, 738], // Laboratório
-              [1290, 200, 1440, 262, 1440, 335], // Terceiro
-              [1440, 540, 1432, 575, 1445, 672], // Expedição
+              [330, 22, 335, 52, 300, 160],
+              [610, 95, 600, 130, 585, 260],
+              [870, 165, 862, 195, 850, 350],
+              [1010, 290, 1000, 318, 1100, 455],
+              [680, 655, 910, 725, 1000, 738],
+              [1290, 200, 1440, 262, 1440, 335],
+              [1440, 540, 1432, 575, 1445, 672],
             ],
-            // caixa do QR code no desenho: [x, y, largura, altura]
             qr: [129, 538, 379, 307],
             extra() {
-              // fluxo principal
               arrow([340, 245], [450, 255], "R", 1);
               arrow([630, 345], [740, 355], "R", 1);
               arrow([920, 445], [1030, 455], "R", 1);
-              arrow([1120, 585], [1120, 660], "R", 1); // envase -> liberação (lab)
-              arrow([1215, 770], [1340, 742], "R", 1); // liberação -> expedição
-              // terceirização
+              arrow([1120, 585], [1120, 660], "R", 1);
+              arrow([1215, 770], [1340, 742], "R", 1);
               arrow([1215, 470], [1340, 420], "W", 1);
               arrow([1400, 455], [1235, 705], "W", 1);
-              // laboratório -> amostragem de entrada (contorna o QR)
               dashPath(
                 "1000,758 1000,875 40,875 40,200 92,200",
                 "#2dd4bf",
                 "arT",
               );
-              arrowT([1170, 690], [1170, 555]); // controle de PF
-              // produtos não conformes (segue por cima da área do QR)
+              arrowT([1170, 690], [1170, 555]);
               dashPath("540,385 540,560 1010,560 1065,690", "#ff4d4d", "arR");
               txt(555, 495, "Produtos não", "#ff7b7b", 19);
               txt(555, 518, "conformes", "#ff7b7b", 19);
@@ -666,13 +666,13 @@
             vb: [900, 1900],
             f: { fs: 30, tf: 22, th: 38, lh: 36, off: 74, cw: 13.5 },
             C: [
-              [230, 330], // Recebimento
-              [650, 590], // Armazenagem
-              [230, 850], // Produção
-              [650, 1110], // Envase
-              [650, 1370], // Laboratório
-              [230, 1110], // Terceiro
-              [230, 1630], // Expedição
+              [230, 330],
+              [650, 590],
+              [230, 850],
+              [650, 1110],
+              [650, 1370],
+              [230, 1110],
+              [230, 1630],
             ],
             P: [
               [330, 40, 320, 110, 260, 265],
@@ -822,7 +822,6 @@
 
           M.extra();
 
-          /* QR code: dentro do desenho (wide) ou solto na tela (tall) */
           if (qrCard) {
             if (M.qr) {
               const [qx, qy, qw, qh] = M.qr;
@@ -861,9 +860,27 @@
       })();
     </script>
 
-    <!-- ============ JOGO + NAVEGAÇÃO ============ -->
+    <!-- ============ JOGO + NAVEGAÇÃO + RANKING ============ -->
     <script>
       (() => {
+        /* ================= CONFIGURAÇÃO DO RANKING ================= */
+        const FORM_URL =
+          "https://docs.google.com/forms/d/e/1FAIpQLSfEckcBLMdwVOkrYAIVR9khWtVzL4bMCPz9LbJ8sJr8ZA0U7Q/formResponse";
+        const ENTRY = {
+          nome: "entry.2019781606",
+          tempo: "entry.646340814",
+          erros: "entry.1741446600",
+          acertos: "entry.348708743",
+          pontuacao: "entry.1621859018",
+        };
+        const SHEET_ID = "1MSCVmrGoyMETb9yT1TT4Ra1Tpo9aC9tI8gih81J7nFw";
+        const SHEET_TAB = "Form Responses 1";
+        const SHEET_CSV =
+          `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=` +
+          encodeURIComponent(SHEET_TAB);
+        const PENALTY = 5; // segundos somados por erro (NC)
+        const TOP_EXTRA = 5; // quantos além do top 3 aparecem na lista
+
         const AREAS = [
           { id: "fluxo", name: "Fluxo", cap: 2 },
           { id: "pesagem", name: "Pesagem", cap: 2 },
@@ -875,7 +892,6 @@
           { id: "eng", name: "Engenharia de Processos", cap: 2 },
         ];
 
-        /* ===== FASES: para mudar a divisão, edite só o campo "areas" ===== */
         const PHASES = [
           {
             name: "Etapa produtiva",
@@ -982,7 +998,8 @@
           chainEl = $("chain-slots"),
           toastEl = $("toast"),
           finalEl = $("final"),
-          phaseEndEl = $("phase-end");
+          phaseEndEl = $("phase-end"),
+          podiumEl = $("podium");
         let phase = 0,
           okAll = 0,
           okPhase = 0,
@@ -993,6 +1010,23 @@
           toastT = null,
           moodT = null,
           consumerEl = null;
+
+        /* ---- cronômetro / jogador ---- */
+        let player = "",
+          t0 = 0,
+          elapsed = 0,
+          running = false,
+          started = false,
+          lastPayload = null,
+          sent = false;
+
+        const fmt = (s) => {
+          const m = Math.floor(s / 60);
+          return m + ":" + (s % 60).toFixed(1).padStart(4, "0");
+        };
+        setInterval(() => {
+          if (running) $("timer").textContent = fmt((Date.now() - t0) / 1000);
+        }, 200);
 
         const isMobile = () =>
           matchMedia("(max-width: 700px) and (max-aspect-ratio: 1/1)").matches;
@@ -1006,8 +1040,12 @@
         };
 
         /* ---------- JOGO / FASES ---------- */
-
         function startGame() {
+          t0 = Date.now();
+          running = started;
+          sent = false;
+          lastPayload = null;
+          $("timer").textContent = "0:00.0";
           okAll = 0;
           nc = 0;
           loadPhase(0);
@@ -1022,6 +1060,7 @@
           toastEl.classList.remove("show");
           finalEl.classList.remove("show");
           phaseEndEl.classList.remove("show");
+          podiumEl.classList.remove("show");
           gridEl.innerHTML = "";
           chainEl.innerHTML = "";
 
@@ -1094,7 +1133,6 @@
           toast(`Fase ${p + 1} · ${P.name}`, "info");
         }
 
-        // reorganiza os cards que restam: ficam maiores a cada acerto
         function layoutCards() {
           const n = gridEl.querySelectorAll(".cell").length;
           gridEl.style.setProperty("--n", Math.max(n, 1));
@@ -1116,7 +1154,6 @@
           consumerEl.querySelector("small").textContent = m.label;
         }
 
-        // mensagens são fixas do código, então podem levar HTML (ícones)
         function toast(msg, type) {
           clearTimeout(toastT);
           toastEl.innerHTML = msg;
@@ -1133,7 +1170,6 @@
           return null;
         };
 
-        // destrava qualquer arrasto que ficou preso (tela touch)
         function cancelDrag() {
           if (!drag) return;
           removeEventListener("pointermove", onMove);
@@ -1155,7 +1191,6 @@
           if (card.dataset.lock || card.classList.contains("placed")) return;
 
           if (!card.classList.contains("flipped")) {
-            // só uma carta aberta por vez
             gridEl.querySelectorAll(".card.flipped").forEach((c) => {
               if (c !== card && !c.dataset.lock) c.classList.remove("flipped");
             });
@@ -1165,7 +1200,7 @@
 
           e.preventDefault();
           try {
-            card.releasePointerCapture(e.pointerId); // essencial no touch
+            card.releasePointerCapture(e.pointerId);
           } catch (_) {}
 
           const rc = card.getBoundingClientRect();
@@ -1180,7 +1215,7 @@
           if (isMobile()) {
             w = innerWidth * 0.4;
             h = (w * 254) / 190;
-            off = -h * 0.5; // a carta fica acima do dedo
+            off = -h * 0.5;
             cx = e.clientX;
             cy = e.clientY + off;
           } else {
@@ -1231,21 +1266,19 @@
           if (hoverSlot) hoverSlot.classList.remove("drag-over");
           hoverSlot = null;
 
-          // toque simples (sem arrastar): só fecha a carta
           if (!moved) {
             card.classList.remove("flipped");
             return returnToCell(card, cell, false);
           }
 
           const slot = slotAt(e.clientX, e.clientY + off);
-          if (!slot) return returnToCell(card, cell, false); // soltou fora
+          if (!slot) return returnToCell(card, cell, false);
           const free = slot.querySelector(".ph:not(.full)");
           if (slot.dataset.area === card.dataset.area && free)
             placeOk(card, slot, free, cell);
           else placeWrong(card, cell, slot);
         }
 
-        // tocar fora da carta aberta fecha a carta
         document.addEventListener("pointerdown", (e) => {
           if (e.target.closest(".card")) return;
           gridEl.querySelectorAll(".card.flipped").forEach((c) => {
@@ -1253,14 +1286,14 @@
           });
         });
 
-        /* ---------- ACERTO: verde em volta, PF conforme ---------- */
+        /* ---------- ACERTO ---------- */
         function placeOk(card, slot, ph, cell) {
           card.removeAttribute("style");
           card.classList.add("placed", "ok-flash");
           ph.classList.add("full");
           ph.appendChild(card);
-          cell.remove(); // some a casa vazia...
-          layoutCards(); // ...e os cards que restam crescem
+          cell.remove();
+          layoutCards();
           setTimeout(() => card.classList.remove("ok-flash"), 900);
           okAll++;
           okPhase++;
@@ -1276,7 +1309,7 @@
           }
         }
 
-        /* ---------- ERRO: vermelho, NC, volta virada (memória) ---------- */
+        /* ---------- ERRO ---------- */
         function placeWrong(card, cell, slot) {
           nc++;
           updateScore();
@@ -1302,7 +1335,6 @@
         function returnToCell(card, cell, flipBack) {
           card.dataset.lock = "1";
           const go = () => {
-            // congela na posição visual atual e desliza até a célula de origem
             const r = card.getBoundingClientRect();
             card.classList.remove("dragging");
             card.style.transition = "none";
@@ -1326,7 +1358,7 @@
             }, 540);
           };
           if (flipBack) {
-            card.classList.remove("flipped"); // volta de costas
+            card.classList.remove("flipped");
             setTimeout(go, 650);
           } else go();
         }
@@ -1346,8 +1378,21 @@
 
         function finish() {
           clearTimeout(moodT);
+          running = false;
+          elapsed = (Date.now() - t0) / 1000;
+          const total = elapsed + nc * PENALTY;
+          lastPayload = {
+            nome: player,
+            tempo: +elapsed.toFixed(1),
+            erros: nc,
+            acertos: okAll,
+            pontuacao: +total.toFixed(1),
+          };
           setMood("happy");
           finalEl.querySelector(".final-face").innerHTML = ic("heart", "fill");
+          $("final-stats").textContent =
+            `${player} · ${fmt(elapsed)} · ${nc} NC · pontuação ${total.toFixed(1)}s`;
+          sendScore(); // envia em segundo plano
           setTimeout(() => finalEl.classList.add("show"), 1300);
         }
 
@@ -1355,68 +1400,214 @@
           loadPhase(phase + 1),
         );
 
+        /* ================= RANKING (Google Forms + Planilhas) ================= */
+        let justSent = false;
+
+        async function sendScore() {
+          if (!lastPayload || sent) return;
+          const p = {
+            nome: lastPayload.nome.replace(/[",]/g, ""),
+            tempo: Math.round(lastPayload.tempo * 1000), // ms
+            erros: lastPayload.erros,
+            acertos: lastPayload.acertos,
+            pontuacao: Math.round(lastPayload.pontuacao * 1000), // ms
+          };
+          const body = new URLSearchParams();
+          for (const k in ENTRY) body.append(ENTRY[k], p[k]);
+          try {
+            await fetch(FORM_URL, { method: "POST", mode: "no-cors", body });
+            sent = true;
+            justSent = true;
+          } catch (_) {}
+        }
+
+        function parseCSV(t) {
+          const rows = [];
+          let row = [],
+            cur = "",
+            q = false;
+          for (let i = 0; i < t.length; i++) {
+            const ch = t[i];
+            if (q) {
+              if (ch === '"') {
+                if (t[i + 1] === '"') {
+                  cur += '"';
+                  i++;
+                } else q = false;
+              } else cur += ch;
+            } else if (ch === '"') q = true;
+            else if (ch === ",") {
+              row.push(cur);
+              cur = "";
+            } else if (ch === "\n" || ch === "\r") {
+              if (ch === "\r" && t[i + 1] === "\n") i++;
+              row.push(cur);
+              rows.push(row);
+              row = [];
+              cur = "";
+            } else cur += ch;
+          }
+          if (cur !== "" || row.length) {
+            row.push(cur);
+            rows.push(row);
+          }
+          return rows;
+        }
+
+        const num = (x) => +String(x).replace(/[^\d.-]/g, "");
+
+        async function loadRanking() {
+          const r = await fetch(SHEET_CSV + "&t=" + Date.now());
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          const rows = parseCSV(await r.text()).slice(1); // pula cabeçalho
+          // colunas: 0 Timestamp, 1 Nome, 2 Tempo, 3 Erros, 4 Acertos, 5 Pontuação
+          const list = rows
+            .map((c) => ({
+              nome: (c[1] || "").trim(),
+              tempo: num(c[2]) / 1000,
+              erros: num(c[3]),
+              pontuacao: num(c[5]) / 1000,
+            }))
+            .filter((r) => r.nome && isFinite(r.pontuacao) && r.pontuacao > 0)
+            .sort((a, b) => a.pontuacao - b.pontuacao);
+          // mantém só o melhor resultado de cada nome
+          const seen = new Set();
+          return list.filter((r) => {
+            const k = r.nome.toLowerCase();
+            if (seen.has(k)) return false;
+            seen.add(k);
+            return true;
+          });
+        }
+
+        async function showPodium() {
+          podiumEl.classList.add("show");
+          $("pod-top").innerHTML = "";
+          $("pod-list").innerHTML = "";
+          $("pod-status").textContent = "Carregando…";
+          await sendScore(); // tenta de novo se tinha falhado
+          if (justSent) {
+            // dá um tempinho para a planilha receber a resposta
+            await new Promise((r) => setTimeout(r, 1800));
+            justSent = false;
+          }
+          try {
+            const ranking = await loadRanking();
+            if (!ranking.length) {
+              $("pod-status").textContent = "Ainda não há resultados.";
+              return;
+            }
+            renderPodium(ranking);
+            $("pod-status").textContent = "";
+          } catch (_) {
+            $("pod-status").textContent =
+              "Não foi possível carregar o pódio. Confira se a planilha está compartilhada para leitura.";
+          }
+        }
+
+        function renderPodium(rank) {
+          const top = $("pod-top"),
+            list = $("pod-list");
+          const mine = (r) =>
+            lastPayload &&
+            r.nome.toLowerCase() ===
+              lastPayload.nome.replace(/[",]/g, "").toLowerCase();
+          const mk = (r, pos) => {
+            const col = document.createElement("div");
+            col.className = "pod-col p" + pos + (mine(r) ? " me" : "");
+            const n = document.createElement("div");
+            n.className = "pod-name";
+            n.textContent = r.nome;
+            const t = document.createElement("div");
+            t.className = "pod-time";
+            t.textContent = `${r.pontuacao.toFixed(1)}s · ${r.erros} NC`;
+            const b = document.createElement("div");
+            b.className = "pod-bar";
+            b.textContent = pos;
+            col.append(n, t, b);
+            return col;
+          };
+          // ordem visual: 2º, 1º, 3º
+          [1, 0, 2].forEach(
+            (i) => rank[i] && top.appendChild(mk(rank[i], i + 1)),
+          );
+          rank.slice(3, 3 + TOP_EXTRA).forEach((r, k) => {
+            const li = document.createElement("li");
+            li.value = k + 4;
+            if (mine(r)) li.className = "me";
+            const a = document.createElement("span");
+            a.textContent = r.nome;
+            const b = document.createElement("b");
+            b.textContent = `${r.pontuacao.toFixed(1)}s · ${r.erros} NC`;
+            li.append(a, b);
+            list.appendChild(li);
+          });
+        }
+
+        $("podium-btn").addEventListener("click", showPodium);
+        $("pod-close").addEventListener("click", () =>
+          podiumEl.classList.remove("show"),
+        );
+
         /* ---------- TELAS ---------- */
-       
-/* ---------- TELAS ---------- */
-const intro = $("screen-intro"),
-  game = $("screen-game"),
-  end = $("screen-end");
+        const intro = $("screen-intro"),
+          game = $("screen-game"),
+          end = $("screen-end"),
+          nameEl = $("player-name");
 
-$("start-btn").addEventListener("click", () => {
-  intro.classList.add("hidden-screen");
-  setTimeout(() => {
-    intro.style.display = "none";
-    game.style.display = "flex"; // CORREÇÃO: reexibe a tela do jogo
-    requestAnimationFrame(() => {
-      game.classList.remove("hidden-screen");
-    });
-  }, 800);
-});
+        nameEl.addEventListener("input", () =>
+          nameEl.classList.remove("err"),
+        );
 
-document.querySelectorAll(".js-end").forEach((b) =>
-  b.addEventListener("click", () => {
-    game.classList.add("hidden-screen");
-    setTimeout(() => {
-      game.style.display = "none";
-      end.style.display = "flex";
-      requestAnimationFrame(() => {
-        end.classList.remove("hidden-screen");
-        window.__buildChain();
-      });
-    }, 800);
-  }),
-);
+        $("start-btn").addEventListener("click", () => {
+          const n = nameEl.value.trim();
+          if (!n) {
+            nameEl.classList.add("err");
+            nameEl.focus();
+            return;
+          }
+          player = n;
+          started = true;
+          startGame(); // zera tudo e começa o cronômetro agora
+          intro.classList.add("hidden-screen");
+          setTimeout(() => {
+            intro.style.display = "none";
+            game.classList.remove("hidden-screen");
+          }, 800);
+        });
 
-$("back-btn").addEventListener("click", () => {
-  end.classList.add("hidden-screen");
+        document.querySelectorAll(".js-end").forEach((b) =>
+          b.addEventListener("click", () => {
+            game.classList.add("hidden-screen");
+            setTimeout(() => {
+              game.style.display = "none";
+              end.style.display = "flex";
+              requestAnimationFrame(() => {
+                end.classList.remove("hidden-screen");
+                window.__buildChain();
+              });
+            }, 800);
+          }),
+        );
 
-  setTimeout(() => {
-    end.style.display = "none";
-    intro.style.display = "flex";
+        $("back-btn").addEventListener("click", () => {
+          end.classList.add("hidden-screen");
+          setTimeout(() => {
+            end.style.display = "none";
+            intro.style.display = "flex";
+            requestAnimationFrame(() => {
+              intro.classList.remove("hidden-screen");
+            });
+          }, 800);
+        });
 
-    requestAnimationFrame(() => {
-      intro.classList.remove("hidden-screen");
-    });
-  }, 800);
-});
+        $("reset-btn").addEventListener("click", startGame);
+        $("again-btn").addEventListener("click", startGame);
 
-$("reset-btn").addEventListener("click", startGame);
-
-// "Jogar novamente" fica dentro da tela do jogo, que já está visível
-$("again-btn").addEventListener("click", () => {
-  intro.style.display = "none";
-  end.style.display = "none";
-  game.style.display = "flex";
-  game.classList.remove("hidden-screen");
-  startGame(); // loadPhase já esconde o #final e o #phase-end
-});
-
-startGame();
-
+        startGame();
       })();
     </script>
 
-    <!-- PWA: funcionar offline / instalar na tela inicial -->
     <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("sw.js").catch(() => {});
